@@ -4,58 +4,91 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BrandWordmark } from "@/components/brand/brand-mark";
 
 /**
- * Nav entries. Active state is derived deterministically from the current
- * hash (#features / #pricing / #faq) — no IntersectionObserver, so it can
- * never flicker or "randomly switch" during a smooth-scroll.
+ * Nav entries. `id` is the section to spy on via scroll position.
  */
 const NAV_LINKS = [
-  { label: "Features", href: "/#features", hash: "features" },
-  { label: "Pricing", href: "/#pricing", hash: "pricing" },
-  { label: "FAQ", href: "/#faq", hash: "faq" },
+  { label: "Features", href: "/#features", id: "features" },
+  { label: "Pricing", href: "/#pricing", id: "pricing" },
+  { label: "FAQ", href: "/#faq", id: "faq" },
 ] as const;
+
+const SPY_IDS = NAV_LINKS.map((l) => l.id);
+// The offset (from the top of the viewport, in px) at which a section is
+// considered "active". Matches the sticky header height + breathing room.
+const ACTIVATION_OFFSET = 120;
 
 /**
  * Sticky scroll-aware marketing nav.
  * - Transparent at the top, frosted + bordered once scrolled > 8px.
- * - Active link derived from the URL hash (deterministic, no spy flicker).
- * - Animated pill highlight that slides between active links.
+ * - Scroll-spy via a single rAF-throttled scroll handler: the active
+ *   section is the last one whose top crossed the activation line. This
+ *   is deterministic for any scroll position — no observer, no flicker.
  * - Mobile slide-down menu.
  */
 export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [hash, setHash] = useState<string>("");
+  const [activeId, setActiveId] = useState<string | null>(null);
   const pathname = usePathname();
   const reduce = useReducedMotion();
+  const isLanding = pathname === "/";
 
-  // Shadow on scroll.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
+    // One rAF-throttled handler does both the shadow + the scroll-spy,
+    // so there's a single scroll listener for the whole nav.
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const y = window.scrollY;
+      setScrolled(y > 8);
+
+      if (!isLanding) {
+        setActiveId(null);
+        return;
+      }
+
+      // Pick the last section whose top is at or above the activation line.
+      // This is stable: for a given scroll position there's exactly one
+      // answer, so it can't flicker. If we're above the first section,
+      // nothing is active.
+      let current: string | null = null;
+      for (const id of SPY_IDS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        // top relative to the document, minus the activation offset.
+        // When this is <= 0, the section's top has crossed the line.
+        if (el.getBoundingClientRect().top + y - ACTIVATION_OFFSET <= y) {
+          current = id;
+        }
+      }
+      setActiveId(current);
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [isLanding]);
 
-  // Track the URL hash. Next.js Link updates the hash for /#section hrefs,
-  // and the browser fires `hashchange`. This is the single source of truth
-  // for which link is active — no observer, no guessing.
-  useEffect(() => {
-    const sync = () => setHash(window.location.hash.replace(/^#/, ""));
-    sync();
-    window.addEventListener("hashchange", sync);
-    return () => window.removeEventListener("hashchange", sync);
-  }, []);
-
-  // A link is active only when we're on the landing route AND its hash
-  // matches the current URL hash exactly.
-  const isActive = (linkHash: string) => pathname === "/" && hash === linkHash;
+  const isActive = (id: string) => isLanding && activeId === id;
 
   return (
     <header
@@ -74,10 +107,10 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
           <BrandWordmark glow={scrolled} />
         </Link>
 
-        {/* Desktop center links with sliding pill */}
+        {/* Desktop center links */}
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((link) => {
-            const active = isActive(link.hash);
+            const active = isActive(link.id);
             return (
               <Link
                 key={link.href}
@@ -93,7 +126,7 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
                 {!active && (
                   <span className="absolute inset-0 rounded-full bg-transparent transition-colors group-hover:bg-muted" />
                 )}
-                {/* Active pill — slides via layoutId */}
+                {/* Active pill */}
                 {active && (
                   <span className="absolute inset-0 rounded-full bg-primary/10 ring-1 ring-inset ring-primary/20" />
                 )}
@@ -162,7 +195,7 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
           >
             <nav className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
               {NAV_LINKS.map((link) => {
-                const active = isActive(link.hash);
+                const active = isActive(link.id);
                 return (
                   <Link
                     key={link.href}

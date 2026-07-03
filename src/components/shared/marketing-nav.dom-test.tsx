@@ -19,26 +19,64 @@ import { MarketingNav } from "@/components/shared/marketing-nav";
 
 type Props = ComponentProps<typeof MarketingNav>;
 
+// Map of section id -> its document-relative top position (px).
+// Positions mimic the real landing page layout (hero, then features,
+// pricing, faq stacked below).
+const SECTION_TOPS: Record<string, number> = {
+  features: 800,
+  pricing: 2000,
+  faq: 3200,
+};
+
+/**
+ * Mounts the tracked sections into the DOM and stubs getBoundingClientRect
+ * so the nav's scroll-spy sees them at the given document positions.
+ * `scrollY` controls window.scrollY (what the scroll handler reads).
+ */
+function mountSections(scrollY = 0) {
+  Object.entries(SECTION_TOPS).forEach(([id, top]) => {
+    const el = document.createElement("section");
+    el.id = id;
+    el.textContent = id;
+    // getBoundingClientRect().top is viewport-relative = documentTop - scrollY
+    const spy = vi.fn(() => ({
+      top: top - scrollY,
+      bottom: top - scrollY + 400,
+      height: 400,
+      width: 800,
+      left: 0,
+      right: 800,
+      x: 0,
+      y: top - scrollY,
+      toJSON: () => ({}),
+    }));
+    el.getBoundingClientRect = spy as HTMLElement["getBoundingClientRect"];
+    document.body.appendChild(el);
+  });
+  Object.defineProperty(window, "scrollY", {
+    writable: true,
+    value: scrollY,
+    configurable: true,
+  });
+}
+
+/** Triggers the nav's scroll handler (rAF-throttled) and flushes it. */
+async function flushScroll() {
+  await act(async () => {
+    window.dispatchEvent(new Event("scroll"));
+    // rAF is async — let it resolve before act flushes.
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await new Promise((r) => setTimeout(r, 0));
+  });
+}
+
 function renderNav(props: Partial<Props> = {}) {
   return render(<MarketingNav isAuthenticated={false} {...props} />);
 }
 
-/**
- * Sets the URL hash and dispatches `hashchange` so the nav's listener
- * re-syncs its active state — mirrors what the browser does on anchor nav.
- */
-function setHash(hash: string) {
-  const url = new URL(window.location.href);
-  url.hash = hash;
-  window.history.replaceState({}, "", url);
-  window.dispatchEvent(new HashChangeEvent("hashchange"));
-}
-
-/** Whether a desktop nav link currently shows the active ring/pill. */
+/** Whether a desktop nav link currently shows the active pill. */
 function linkIsActive(label: string) {
   const link = screen.getAllByRole("link", { name: label })[0];
-  // Active links render an inset ring span; inactive ones render the hover
-  // bg span (bg-transparent). We detect active by the ring class.
   return Boolean(link.querySelector(".ring-primary\\/20"));
 }
 
@@ -46,7 +84,6 @@ describe("MarketingNav", () => {
   beforeEach(() => {
     mockPathname.mockReturnValue("/");
     document.body.innerHTML = "";
-    window.location.hash = "";
   });
 
   it("renders brand, nav links, and auth CTAs", () => {
@@ -82,38 +119,44 @@ describe("MarketingNav", () => {
     );
   });
 
-  it("highlights Features when the hash is #features", () => {
+  it("highlights nothing when at the top of the page (hero)", async () => {
+    mountSections(0);
     renderNav();
-    act(() => setHash("features"));
-    expect(linkIsActive("Features")).toBe(true);
-    expect(linkIsActive("Pricing")).toBe(false);
-    expect(linkIsActive("FAQ")).toBe(false);
-  });
-
-  it("switches the highlight to Pricing when the hash changes", () => {
-    renderNav();
-    act(() => setHash("features"));
-    expect(linkIsActive("Features")).toBe(true);
-    act(() => setHash("pricing"));
-    expect(linkIsActive("Features")).toBe(false);
-    expect(linkIsActive("Pricing")).toBe(true);
-  });
-
-  it("clears the highlight when the hash is cleared (logo click)", () => {
-    renderNav();
-    act(() => setHash("pricing"));
-    expect(linkIsActive("Pricing")).toBe(true);
-    // Logo navigates to "/" — no hash.
-    act(() => setHash(""));
+    await flushScroll();
     expect(linkIsActive("Features")).toBe(false);
     expect(linkIsActive("Pricing")).toBe(false);
     expect(linkIsActive("FAQ")).toBe(false);
   });
 
-  it("never highlights links on non-landing routes", () => {
+  it("highlights Features when scrolled into the features section", async () => {
+    mountSections(900);
+    renderNav();
+    await flushScroll();
+    expect(linkIsActive("Features")).toBe(true);
+    expect(linkIsActive("Pricing")).toBe(false);
+  });
+
+  it("switches highlight to Pricing when scrolled further down", async () => {
+    mountSections(2100);
+    renderNav();
+    await flushScroll();
+    expect(linkIsActive("Features")).toBe(false);
+    expect(linkIsActive("Pricing")).toBe(true);
+    expect(linkIsActive("FAQ")).toBe(false);
+  });
+
+  it("highlights FAQ at the bottom of the page", async () => {
+    mountSections(3300);
+    renderNav();
+    await flushScroll();
+    expect(linkIsActive("FAQ")).toBe(true);
+  });
+
+  it("never highlights on non-landing routes", async () => {
     mockPathname.mockReturnValue("/pricing");
+    mountSections(900);
     renderNav();
-    act(() => setHash("features"));
+    await flushScroll();
     expect(linkIsActive("Features")).toBe(false);
     expect(linkIsActive("Pricing")).toBe(false);
     expect(linkIsActive("FAQ")).toBe(false);
