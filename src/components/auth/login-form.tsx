@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Loader2, LogIn, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { IconInput, PasswordInput } from "@/components/ui/icon-input";
+import { BrandMark } from "@/components/brand/brand-mark";
 import {
   Card,
   CardContent,
@@ -45,9 +46,7 @@ export function LoginForm() {
   return (
     <Card className="rounded-2xl border-border/60 py-6 shadow-xl shadow-black/5">
       <CardHeader className="space-y-1.5 px-6 text-center">
-        <div className="mx-auto mb-1 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <LogIn className="size-6" />
-        </div>
+        <BrandMark className="mx-auto mb-1" size={48} />
         <CardTitle className="text-2xl">Welcome back</CardTitle>
         <CardDescription>Log in to continue to your dashboard.</CardDescription>
       </CardHeader>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, MailOpen } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ResendVerification } from "@/components/auth/resend-verification";
+import { BrandMark } from "@/components/brand/brand-mark";
 
 export default async function VerifyEmailPage({
   searchParams,
@@ -18,9 +19,7 @@ export default async function VerifyEmailPage({
   return (
     <Card className="rounded-2xl border-border/60 py-6 shadow-xl shadow-black/5">
       <CardHeader className="space-y-1.5 px-6 text-center">
-        <div className="mx-auto mb-1 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <MailOpen className="size-6" />
-        </div>
+        <BrandMark className="mx-auto mb-1" size={48} />
         <CardTitle className="text-2xl">Check your inbox</CardTitle>
         <CardDescription>
           We sent a verification link

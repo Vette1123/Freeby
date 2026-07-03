@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { ArrowLeft, KeyRound, Loader2, Mail, MailCheck } from "lucide-react";
+import { ArrowLeft, Loader2, Mail } from "lucide-react";
 import { requestPasswordReset } from "@/lib/auth-client";
 import { forgotSchema, type ForgotInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/icon-input";
+import { BrandMark } from "@/components/brand/brand-mark";
 import {
   Card,
   CardContent,
@@ -39,9 +40,7 @@ export function ForgotForm() {
   return (
     <Card className="rounded-2xl border-border/60 py-6 shadow-xl shadow-black/5">
       <CardHeader className="space-y-1.5 px-6 text-center">
-        <div className="mx-auto mb-1 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          {sent ? <MailCheck className="size-6" /> : <KeyRound className="size-6" />}
-        </div>
+        <BrandMark className="mx-auto mb-1" size={48} />
         <CardTitle className="text-2xl">
           {sent ? "Check your email" : "Forgot password?"}
         </CardTitle>

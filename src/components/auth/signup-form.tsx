@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Loader2, Mail, User, UserPlus } from "lucide-react";
+import { Loader2, Mail, User } from "lucide-react";
 import { signUp } from "@/lib/auth-client";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { IconInput, PasswordInput } from "@/components/ui/icon-input";
+import { BrandMark } from "@/components/brand/brand-mark";
 import {
   Card,
   CardContent,
@@ -43,9 +44,7 @@ export function SignupForm() {
   return (
     <Card className="rounded-2xl border-border/60 py-6 shadow-xl shadow-black/5">
       <CardHeader className="space-y-1.5 px-6 text-center">
-        <div className="mx-auto mb-1 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-          <UserPlus className="size-6" />
-        </div>
+        <BrandMark className="mx-auto mb-1" size={48} />
         <CardTitle className="text-2xl">Create your account</CardTitle>
         <CardDescription>
           Sign up to get started — it only takes a moment.
