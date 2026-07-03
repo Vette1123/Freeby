@@ -5,6 +5,13 @@ import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/get-session";
 
+export const metadata = {
+  title: "Pricing",
+  description:
+    "Freeby is free to start — 1 client and 3 invoices a month. Upgrade to Pro for $19/mo or $190/yr for unlimited everything.",
+  alternates: { canonical: "/pricing" },
+};
+
 const freeFeatures = [
   "1 client",
   "3 invoices per month",

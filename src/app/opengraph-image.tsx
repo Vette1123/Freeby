@@ -6,10 +6,10 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const features = ["Time tracking", "Invoicing", "Get paid faster"];
+const features = ["⏱  Time tracking", "🧾  Invoicing", "💸  Get paid faster"];
 
 export default function OpenGraphImage() {
-  const badge = svgToDataUri(brandBadgeSvg({ size: 76, radius: 20 }));
+  const badge = svgToDataUri(brandBadgeSvg({ size: 88, radius: 22 }));
 
   return new ImageResponse(
     (
@@ -21,20 +21,20 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: 80,
+          padding: "72px 80px",
           background: BRAND.ink,
           color: "#fafafa",
           fontFamily: "sans-serif",
           overflow: "hidden",
         }}
       >
-        {/* Indigo aurora glow — mirrors the .bg-aurora utility on the site. */}
+        {/* Indigo aurora glow — mirrors the site's .bg-aurora utility. */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(900px 520px at 50% -18%, rgba(79,70,229,0.36), transparent 70%)",
+              "radial-gradient(900px 520px at 50% -18%, rgba(79,70,229,0.40), transparent 70%)",
           }}
         />
         <div
@@ -42,38 +42,26 @@ export default function OpenGraphImage() {
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(680px 520px at 108% 118%, rgba(129,140,248,0.24), transparent 70%)",
+              "radial-gradient(680px 520px at 108% 118%, rgba(129,140,248,0.26), transparent 70%)",
+          }}
+        />
+        {/* Subtle grid texture */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
           }}
         />
 
-        {/* Header: brand lockup + version pill */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={badge} width={76} height={76} alt="" />
-            <span
-              style={{ fontSize: 30, fontWeight: 600, letterSpacing: -0.5 }}
-            >
-              {BRAND.name}
-            </span>
-          </div>
-          <span
-            style={{
-              display: "flex",
-              fontSize: 22,
-              color: "rgba(250,250,250,0.62)",
-              border: "1px solid rgba(255,255,255,0.14)",
-              borderRadius: 999,
-              padding: "10px 22px",
-            }}
-          >
-            For freelancers
+        {/* Header: brand lockup */}
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={badge} width={88} height={88} alt="" />
+          <span style={{ fontSize: 34, fontWeight: 700, letterSpacing: -0.5 }}>
+            {BRAND.name}
           </span>
         </div>
 
@@ -87,32 +75,44 @@ export default function OpenGraphImage() {
               letterSpacing: 4,
               textTransform: "uppercase",
               color: BRAND.indigoLight,
-              marginBottom: 22,
+              marginBottom: 24,
             }}
           >
             Invoicing without the bloat
           </span>
           <span
             style={{
-              fontSize: 92,
+              fontSize: 96,
               fontWeight: 700,
-              lineHeight: 1.02,
-              letterSpacing: -3,
+              lineHeight: 1.0,
+              letterSpacing: -3.5,
             }}
           >
-            Track time. Send invoices. Get paid.
+            Track time.
           </span>
           <span
             style={{
-              fontSize: 30,
-              lineHeight: 1.4,
-              color: "rgba(250,250,250,0.64)",
-              marginTop: 26,
-              maxWidth: 920,
+              fontSize: 96,
+              fontWeight: 700,
+              lineHeight: 1.0,
+              letterSpacing: -3.5,
+              marginTop: 4,
             }}
           >
-            One unbroken flow from a running timer to a paid invoice — built for
-            freelancers who hate FreshBooks.
+            Send invoices.
+          </span>
+          <span
+            style={{
+              display: "flex",
+              fontSize: 96,
+              fontWeight: 700,
+              lineHeight: 1.0,
+              letterSpacing: -3.5,
+              marginTop: 4,
+            }}
+          >
+            <span>Get paid.</span>
+            <span style={{ color: BRAND.indigoLight, marginLeft: 16 }}>.</span>
           </span>
         </div>
 
@@ -131,11 +131,11 @@ export default function OpenGraphImage() {
                 style={{
                   display: "flex",
                   fontSize: 22,
-                  color: "rgba(250,250,250,0.78)",
-                  background: "rgba(255,255,255,0.06)",
+                  color: "rgba(250,250,250,0.82)",
+                  background: "rgba(255,255,255,0.07)",
                   border: "1px solid rgba(255,255,255,0.12)",
                   borderRadius: 999,
-                  padding: "10px 22px",
+                  padding: "12px 22px",
                 }}
               >
                 {f}
@@ -143,7 +143,7 @@ export default function OpenGraphImage() {
             ))}
           </div>
           <span
-            style={{ display: "flex", fontSize: 24, color: BRAND.indigoLight }}
+            style={{ display: "flex", fontSize: 24, color: BRAND.indigoLight, fontWeight: 600 }}
           >
             freeby.app
           </span>

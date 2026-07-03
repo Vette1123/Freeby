@@ -24,7 +24,7 @@ export const BRAND = {
 /** Renders the brand badge as a standalone SVG string at the given size. */
 export function brandBadgeSvg({
   size = 512,
-  radius = 120,
+  radius = 112,
 }: { size?: number; radius?: number } = {}): string {
   return `<svg width="${size}" height="${size}" viewBox="0 0 512 512" role="img" aria-label="${BRAND.name}" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -34,17 +34,14 @@ export function brandBadgeSvg({
       <stop offset="1" stop-color="${BRAND.indigoDark}"/>
     </linearGradient>
     <linearGradient id="fb-sheen" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#fff" stop-opacity=".25"/>
-      <stop offset=".45" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0" stop-color="#fff" stop-opacity=".28"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="${radius}" fill="url(#fb-bg)"/>
   <rect width="512" height="512" rx="${radius}" fill="url(#fb-sheen)"/>
-  <rect x="168" y="120" width="176" height="272" rx="28" fill="#fff"/>
-  <rect x="200" y="168" width="112" height="16" rx="8" fill="${BRAND.indigo}"/>
-  <rect x="200" y="200" width="112" height="12" rx="6" fill="#c7d2fe"/>
-  <rect x="200" y="224" width="80" height="12" rx="6" fill="#c7d2fe"/>
-  <path d="M256 326 l-34 -34 a14 14 0 0 1 20 -20 l24 24 l46 -46 a14 14 0 0 1 20 20 z" fill="${BRAND.indigo}"/>
+  <path d="M212 128 L340 128 L340 180 L262 180 L262 234 L320 234 L320 286 L262 286 L262 402 L212 402 Z" fill="#ffffff"/>
+  <path d="M288 340 l-26 -26 a12 12 0 0 1 17 -17 l17 17 l40 -40 a12 12 0 0 1 17 17 z" fill="${BRAND.indigo}"/>
 </svg>`;
 }
 

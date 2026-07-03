@@ -15,6 +15,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/get-session";
+import { StructuredData } from "@/components/seo/structured-data";
+
+export const metadata = {
+  title: "Freeby — Invoicing & Time Tracking for Freelancers",
+  description:
+    "Track time, send professional invoices, and get paid in one unbroken flow. Free to start — no credit card required.",
+  alternates: { canonical: "/" },
+};
 
 const flow = [
   {
@@ -111,6 +119,7 @@ export default async function Home() {
 
   return (
     <main className="bg-aurora relative flex min-h-svh flex-col overflow-hidden">
+      <StructuredData />
       {/* Nav */}
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2.5 font-heading text-lg font-semibold">
