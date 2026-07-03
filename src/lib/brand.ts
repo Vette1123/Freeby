@@ -7,12 +7,25 @@
  * statically as `app/icon.svg` and reused by the generated `apple-icon` and
  * Open Graph routes via `svgToDataUri`.
  */
+import { env } from "@/env";
+
+/** The bare host (no protocol) for display contexts like the OG image / PDFs. */
+export function brandHost(): string {
+  try {
+    return new URL(env.NEXT_PUBLIC_APP_URL).host;
+  } catch {
+    return "freeby.app";
+  }
+}
 
 export const BRAND = {
   name: "Freeby",
   tagline: "Invoicing without the bloat",
   author: "Freeby",
-  site: "https://freeby.app",
+  /** Full site URL — derived from NEXT_PUBLIC_APP_URL at runtime. */
+  get site(): string {
+    return env.NEXT_PUBLIC_APP_URL;
+  },
   // Indigo scale (hue ~243) matching the `--primary` token in globals.css.
   indigoLight: "#818cf8",
   indigo: "#4f46e5",

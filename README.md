@@ -286,6 +286,70 @@ src/
 
 ---
 
+## ☁️ Deploy to Vercel
+
+Freeby is built for Vercel (serverless, Neon HTTP driver, edge-friendly).
+
+### Step 1 — Create the database
+
+```bash
+pnpm db:push     # or: pnpm db:migrate  (uses the committed migrations)
+```
+
+### Step 2 — Set environment variables in Vercel
+
+In your Vercel project → **Settings → Environment Variables**, add:
+
+**Required (build fails without these):**
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | Your Neon connection string |
+| `BETTER_AUTH_SECRET` | Run `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | Your Vercel URL (e.g. `https://your-app.vercel.app`) |
+| `NEXT_PUBLIC_APP_URL` | **Same as `BETTER_AUTH_URL`** |
+| `EMAIL_FROM` | A verified Resend sender (e.g. `noreply@yourdomain.com`) |
+
+**Optional (enable features):**
+
+| Variable | Value |
+|---|---|
+| `RESEND_API_KEY` | From Resend dashboard |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | From Google Cloud Console (enables Google login) |
+| `LEMONSQUEEZY_API_KEY` | From Lemon Squeezy settings (enables billing) |
+| `LEMONSQUEEZY_STORE_ID` | Auto-filled by `pnpm setup` |
+| `LEMONSQUEEZY_VARIANT_MONTHLY` / `_YEARLY` | Auto-filled by `pnpm setup` |
+| `LEMONSQUEEZY_WEBHOOK_SECRET` | Auto-filled by `pnpm setup` |
+| `SEO_GOOGLE_VERIFICATION` | Google Search Console token (optional SEO) |
+
+> ⚠️ **`BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` must match exactly.**
+> When you add a custom domain later, update both env vars to the new domain
+> and redeploy — the brand, OG image, PDF footer, and emails all adapt
+> automatically.
+
+### Step 3 — Deploy
+
+```bash
+vercel --prod
+```
+
+Or connect the GitHub repo in the Vercel dashboard for auto-deploys on push.
+
+### Step 4 — Wire Lemon Squeezy (after first deploy)
+
+Once you have your production URL, run the setup wizard locally to create the
+webhook endpoint on Lemon Squeezy:
+
+```bash
+# Point setup at your production URL
+NEXT_PUBLIC_APP_URL=https://your-app.vercel.app pnpm setup
+```
+
+Copy the resulting `LEMONSQUEEZY_WEBHOOK_SECRET` into Vercel's env vars and
+redeploy.
+
+---
+
 ## 🔒 Webhooks in production
 
 When you deploy, set `NEXT_PUBLIC_APP_URL` to your real domain and run `pnpm setup` again — it creates the Lemon Squeezy webhook endpoint automatically and writes the signing secret to `.env`.

@@ -1,5 +1,10 @@
 import { ImageResponse } from "next/og";
-import { BRAND, brandBadgeSvg, svgToDataUri } from "@/lib/brand";
+import {
+  BRAND,
+  brandBadgeSvg,
+  brandHost,
+  svgToDataUri,
+} from "@/lib/brand";
 
 export const alt =
   "Freeby — clean, fast invoicing and time tracking for freelancers.";
@@ -145,7 +150,7 @@ export default function OpenGraphImage() {
           <span
             style={{ display: "flex", fontSize: 24, color: BRAND.indigoLight, fontWeight: 600 }}
           >
-            freeby.app
+            {brandHost()}
           </span>
         </div>
       </div>

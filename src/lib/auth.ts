@@ -8,6 +8,9 @@ import { sendVerificationEmail, sendResetPasswordEmail } from "@/lib/email/resen
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
+  // Trust the configured origin so OAuth callbacks and CSRF checks work
+  // cleanly across preview and production deployments.
+  trustedOrigins: [env.BETTER_AUTH_URL],
   database: drizzleAdapter(db, { provider: "pg" }),
   emailAndPassword: {
     enabled: true,

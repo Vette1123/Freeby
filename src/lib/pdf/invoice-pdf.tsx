@@ -5,6 +5,7 @@
 // <Page>, <View>, <Text>) — NOT DOM elements.
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { formatDate } from "@/lib/format";
+import { brandHost } from "@/lib/brand";
 
 export interface InvoicePdfData {
   number: string;
@@ -243,7 +244,7 @@ export function InvoicePdf({ data }: { data: InvoicePdfData }) {
         )}
 
         <Text style={styles.footer} fixed>
-          Generated with Freeby · freeby.app
+          Generated with Freeby · {brandHost()}
         </Text>
       </Page>
     </Document>

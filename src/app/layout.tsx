@@ -50,11 +50,14 @@ export const metadata: Metadata = {
     "invoice maker",
     "freelance billing software",
   ],
-  authors: [{ name: "Freeby" }],
+  authors: [{ name: "Freeby", url: env.NEXT_PUBLIC_APP_URL }],
   creator: "Freeby",
   publisher: "Freeby",
   category: "business",
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: { "en-US": "/" },
+  },
   openGraph: {
     type: "website",
     siteName: "Freeby",
@@ -88,6 +91,12 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  // Search-engine verification tokens — set these in your env (optional).
+  // e.g. Google: google-site-verification=your_token
+  //      Bing:   other.BingSiteVerification=your_token
+  verification: process.env.SEO_GOOGLE_VERIFICATION
+    ? { google: process.env.SEO_GOOGLE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
