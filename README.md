@@ -9,7 +9,6 @@ The freelancer's toolkit built around **one unbroken flow**:
 
 No 47-tab nightmare. No learning curve. No bloat.
 
-[![CI](https://github.com/Vette1123/Freeby/actions/workflows/ci.yml/badge.svg)](https://github.com/Vette1123/Freeby/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen.svg)](./package.json)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
