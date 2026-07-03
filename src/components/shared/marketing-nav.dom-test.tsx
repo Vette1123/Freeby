@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
 
@@ -24,44 +24,29 @@ function renderNav(props: Partial<Props> = {}) {
 }
 
 /**
- * Injects the tracked sections into the DOM (BEFORE rendering the nav) so
- * the scroll-spy observer finds them by id when its effect runs.
+ * Sets the URL hash and dispatches `hashchange` so the nav's listener
+ * re-syncs its active state — mirrors what the browser does on anchor nav.
  */
-function mountSections() {
-  ["features", "pricing", "faq"].forEach((id) => {
-    const el = document.createElement("section");
-    el.id = id;
-    el.textContent = id;
-    document.body.appendChild(el);
-  });
+function setHash(hash: string) {
+  const url = new URL(window.location.href);
+  url.hash = hash;
+  window.history.replaceState({}, "", url);
+  window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
 
-function renderWithSections(props: Partial<Props> = {}) {
-  mountSections();
-  return renderNav(props);
-}
-
-/**
- * Drives the IntersectionObserver mock: mark exactly one section visible.
- * Returns the observer instance the nav created.
- */
-function getObserver() {
-  // The mock stores instances on a static holder; we reach it via the
-  // global class's __instances. Instead, simpler: the mock fires callback
-  // on observe() — but our nav observes then waits for visibility changes.
-  // We expose a helper on the global to drive it.
-  return (globalThis as unknown as {
-    __lastIntersectionObserver?: {
-      setVisible: (ids: string[]) => void;
-      setNoneVisible: () => void;
-    };
-  }).__lastIntersectionObserver;
+/** Whether a desktop nav link currently shows the active ring/pill. */
+function linkIsActive(label: string) {
+  const link = screen.getAllByRole("link", { name: label })[0];
+  // Active links render an inset ring span; inactive ones render the hover
+  // bg span (bg-transparent). We detect active by the ring class.
+  return Boolean(link.querySelector(".ring-primary\\/20"));
 }
 
 describe("MarketingNav", () => {
   beforeEach(() => {
     mockPathname.mockReturnValue("/");
     document.body.innerHTML = "";
+    window.location.hash = "";
   });
 
   it("renders brand, nav links, and auth CTAs", () => {
@@ -97,66 +82,54 @@ describe("MarketingNav", () => {
     );
   });
 
-  it("highlights the Features link when the features section is in view", async () => {
-    renderWithSections();
-    const obs = getObserver();
-    expect(obs).toBeDefined();
-    act(() => obs!.setVisible(["features"]));
-    // State update from the observer callback is async — wait for re-render.
-    await waitFor(() => {
-      const featuresLink = screen.getByRole("link", { name: "Features" });
-      const pill = featuresLink.querySelector(".bg-primary");
-      expect(pill).not.toBeNull();
-    });
+  it("highlights Features when the hash is #features", () => {
+    renderNav();
+    act(() => setHash("features"));
+    expect(linkIsActive("Features")).toBe(true);
+    expect(linkIsActive("Pricing")).toBe(false);
+    expect(linkIsActive("FAQ")).toBe(false);
   });
 
-  it("clears the highlight when no section is in view (e.g. scrolled to hero)", async () => {
-    renderWithSections();
-    const obs = getObserver();
-    // First activate features...
-    act(() => obs!.setVisible(["features"]));
-    await waitFor(() => {
-      expect(
-        screen.getByRole("link", { name: "Features" }).querySelector(".bg-primary"),
-      ).not.toBeNull();
-    });
-    // ...then nothing is visible (user scrolled back to the hero).
-    act(() => obs!.setNoneVisible());
-    await waitFor(() => {
-      for (const label of ["Features", "Pricing", "FAQ"]) {
-        const link = screen.getByRole("link", { name: label });
-        expect(link.querySelector(".bg-primary")).toBeNull();
-      }
-    });
+  it("switches the highlight to Pricing when the hash changes", () => {
+    renderNav();
+    act(() => setHash("features"));
+    expect(linkIsActive("Features")).toBe(true);
+    act(() => setHash("pricing"));
+    expect(linkIsActive("Features")).toBe(false);
+    expect(linkIsActive("Pricing")).toBe(true);
   });
 
-  it("does not spy sections on non-landing routes (no active pill)", () => {
+  it("clears the highlight when the hash is cleared (logo click)", () => {
+    renderNav();
+    act(() => setHash("pricing"));
+    expect(linkIsActive("Pricing")).toBe(true);
+    // Logo navigates to "/" — no hash.
+    act(() => setHash(""));
+    expect(linkIsActive("Features")).toBe(false);
+    expect(linkIsActive("Pricing")).toBe(false);
+    expect(linkIsActive("FAQ")).toBe(false);
+  });
+
+  it("never highlights links on non-landing routes", () => {
     mockPathname.mockReturnValue("/pricing");
-    renderWithSections();
-    // On /pricing the spy never activates, so no pill anywhere.
-    for (const label of ["Features", "Pricing", "FAQ"]) {
-      const link = screen.getByRole("link", { name: label });
-      expect(link.querySelector(".bg-primary")).toBeNull();
-    }
+    renderNav();
+    act(() => setHash("features"));
+    expect(linkIsActive("Features")).toBe(false);
+    expect(linkIsActive("Pricing")).toBe(false);
+    expect(linkIsActive("FAQ")).toBe(false);
   });
 
   it("mobile menu toggles open and closed on hamburger click", async () => {
     const user = userEvent.setup();
     renderNav();
-    const menuButton = screen.getByRole("button", {
-      name: /open menu/i,
-    });
+    const menuButton = screen.getByRole("button", { name: /open menu/i });
     await user.click(menuButton);
-    // Menu open: the close button is now labelled.
     expect(
       screen.getByRole("button", { name: /close menu/i }),
     ).toBeInTheDocument();
-    // Mobile links are visible.
     expect(screen.getAllByText("Features").length).toBeGreaterThanOrEqual(2);
 
-    await user.click(
-      screen.getByRole("button", { name: /close menu/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /close menu/i }));
     expect(
       screen.queryByRole("button", { name: /close menu/i }),
     ).not.toBeInTheDocument();

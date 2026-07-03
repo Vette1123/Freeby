@@ -11,31 +11,31 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { BrandWordmark } from "@/components/brand/brand-mark";
 
 /**
- * Nav entries. `id` (when present) enables scroll-spy: the link is marked
- * active when that section is in view on the landing page.
+ * Nav entries. Active state is derived deterministically from the current
+ * hash (#features / #pricing / #faq) — no IntersectionObserver, so it can
+ * never flicker or "randomly switch" during a smooth-scroll.
  */
 const NAV_LINKS = [
-  { label: "Features", href: "/#features", id: "features" },
-  { label: "Pricing", href: "/#pricing", id: "pricing" },
-  { label: "FAQ", href: "/#faq", id: "faq" },
+  { label: "Features", href: "/#features", hash: "features" },
+  { label: "Pricing", href: "/#pricing", hash: "pricing" },
+  { label: "FAQ", href: "/#faq", hash: "faq" },
 ] as const;
 
 /**
  * Sticky scroll-aware marketing nav.
  * - Transparent at the top, frosted + bordered once scrolled > 8px.
- * - backdrop-blur + backdrop-saturate for crisp, non-washed-out glass.
- * - Scroll-spy: highlights the section currently in view (Features/Pricing/FAQ).
+ * - Active link derived from the URL hash (deterministic, no spy flicker).
  * - Animated pill highlight that slides between active links.
  * - Mobile slide-down menu.
  */
 export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [hash, setHash] = useState<string>("");
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
-  // Shadow on scroll
+  // Shadow on scroll.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -43,63 +43,19 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Scroll-spy: watch the landing-page sections and mark the active one.
-  // The setActiveId calls live inside the IntersectionObserver callback
-  // (an async boundary), not in the effect body — this is the pattern the
-  // react-hooks/set-state-in-effect rule considers safe.
+  // Track the URL hash. Next.js Link updates the hash for /#section hrefs,
+  // and the browser fires `hashchange`. This is the single source of truth
+  // for which link is active — no observer, no guessing.
   useEffect(() => {
-    const isLanding = pathname === "/";
-    const ids = NAV_LINKS.map((l) => l.id).filter(Boolean) as string[];
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
+    const sync = () => setHash(window.location.hash.replace(/^#/, ""));
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
 
-    // Reset on routes without sections; on landing, seed from scroll position.
-    if (!isLanding || sections.length === 0) {
-      const reset = () => setActiveId(null);
-      reset();
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Pick the entry closest to the top that's currently intersecting.
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) {
-          setActiveId(visible[0].target.id);
-        } else {
-          // Nothing in the spy zone — user is back at the hero (or below
-          // all tracked sections). Clear the highlight so no link shows
-          // stale "active" state (e.g. after clicking the logo to go home).
-          setActiveId(null);
-        }
-      },
-      {
-        // Trigger when a section's top crosses ~30% from the viewport top,
-        // accounting for the sticky header height.
-        rootMargin: "-30% 0px -60% 0px",
-        threshold: 0,
-      },
-    );
-    sections.forEach((s) => observer.observe(s));
-
-    // Seed: immediately pick whichever section is already in view, so a
-    // fresh load deep into the page highlights correctly without a scroll.
-    const seed = () => {
-      const visible = sections
-        .filter((s) => {
-          const r = s.getBoundingClientRect();
-          return r.top < window.innerHeight * 0.7 && r.bottom > window.innerHeight * 0.3;
-        })
-        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-      setActiveId(visible[0]?.id ?? null);
-    };
-    seed();
-
-    return () => observer.disconnect();
-  }, [pathname]);
+  // A link is active only when we're on the landing route AND its hash
+  // matches the current URL hash exactly.
+  const isActive = (linkHash: string) => pathname === "/" && hash === linkHash;
 
   return (
     <header
@@ -121,27 +77,25 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
         {/* Desktop center links with sliding pill */}
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((link) => {
-            const active = pathname === "/" && link.id === activeId;
+            const active = isActive(link.hash);
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                  "group relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
                   active
-                    ? "text-primary-foreground"
+                    ? "text-primary"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && !reduce && (
-                  <motion.span
-                    layoutId="nav-pill"
-                    className="absolute inset-0 rounded-full bg-primary shadow-sm shadow-primary/30"
-                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  />
+                {/* Hover background for non-active links */}
+                {!active && (
+                  <span className="absolute inset-0 rounded-full bg-transparent transition-colors group-hover:bg-muted" />
                 )}
-                {active && reduce && (
-                  <span className="absolute inset-0 rounded-full bg-primary" />
+                {/* Active pill — slides via layoutId */}
+                {active && (
+                  <span className="absolute inset-0 rounded-full bg-primary/10 ring-1 ring-inset ring-primary/20" />
                 )}
                 <span className="relative z-10">{link.label}</span>
               </Link>
@@ -163,10 +117,7 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
             <>
               <Link
                 href="/login"
-                className={cn(
-                  buttonVariants({ variant: "ghost" }),
-                  "rounded-full",
-                )}
+                className={cn(buttonVariants({ variant: "ghost" }), "rounded-full")}
               >
                 Log in
               </Link>
@@ -211,7 +162,7 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
           >
             <nav className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
               {NAV_LINKS.map((link) => {
-                const active = pathname === "/" && link.id === activeId;
+                const active = isActive(link.hash);
                 return (
                   <Link
                     key={link.href}
