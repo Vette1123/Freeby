@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Clock, ReceiptText, TrendingUp, Users } from "lucide-react";
+import { Clock, TrendingUp, Users } from "lucide-react";
 import { EASE_OUT } from "@/components/motion/easing";
+import { BrandMark } from "@/components/brand/brand-mark";
 
 /** Animated count-up for currency/number stats. */
 function CountUp({
@@ -93,8 +94,8 @@ export function DashboardMockup() {
         <span className="size-3 rounded-full bg-rose-400/70" />
         <span className="size-3 rounded-full bg-amber-400/70" />
         <span className="size-3 rounded-full bg-emerald-400/70" />
-        <span className="ml-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <ReceiptText className="size-3" />
+        <span className="ml-3 flex items-center gap-2 text-xs text-muted-foreground">
+          <BrandMark size={14} />
           freeby.app/dashboard
         </span>
       </div>

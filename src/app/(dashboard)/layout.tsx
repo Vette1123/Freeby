@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ReceiptText } from "lucide-react";
 import { requireSession } from "@/lib/get-session";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { getEntitlement } from "@/lib/subscription";
 import { PlanBadge } from "@/components/shared/plan-badge";
+import { BrandMark } from "@/components/brand/brand-mark";
 
 export default async function DashboardLayout({
   children,
@@ -17,16 +17,14 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-svh">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <header className="glass-strong sticky top-0 z-40 border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-6">
             <Link
               href="/dashboard"
               className="flex items-center gap-2 font-heading font-semibold"
             >
-              <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <ReceiptText className="size-4" />
-              </span>
+              <BrandMark size={32} />
               <span className="hidden sm:inline">Freeby</span>
             </Link>
             <DashboardNav />

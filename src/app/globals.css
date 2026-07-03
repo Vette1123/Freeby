@@ -169,23 +169,37 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    /* Crisp text + prevent sub-pixel layout shifts */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent iOS rubber-band glow bleeding the aurora through */
+    overscroll-behavior-y: none;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-heading), var(--font-sans), sans-serif;
     letter-spacing: -0.025em;
+    /* Subpixel-accurate rendering for headings */
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
   /* Nicer focus rings everywhere */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
+  }
+  /* SVGs and images never blur on scale */
+  svg, img {
+    shape-rendering: geometricPrecision;
   }
 }
 
@@ -206,7 +220,9 @@
       );
   }
 
-  /* Animated aurora blobs for hero backgrounds. */
+  /* Animated aurora blobs for hero backgrounds.
+     Uses opacity-only keyframes (no transform) so edges stay soft and the
+     GPU never re-rasterizes a huge blurred layer. */
   .bg-aurora-animated {
     background-color: var(--background);
     position: relative;
@@ -215,35 +231,44 @@
   .bg-aurora-animated::before {
     content: "";
     position: absolute;
-    inset: -20%;
+    inset: -10%;
     z-index: -1;
     background:
       radial-gradient(
-        40% 40% at 20% 25%,
-        color-mix(in oklch, var(--primary) 30%, transparent) 0%,
-        transparent 70%
+        42% 38% at 18% 22%,
+        color-mix(in oklch, var(--primary) 26%, transparent) 0%,
+        transparent 72%
       ),
       radial-gradient(
-        35% 35% at 80% 15%,
-        color-mix(in oklch, var(--chart-2) 28%, transparent) 0%,
-        transparent 70%
+        38% 34% at 82% 18%,
+        color-mix(in oklch, var(--chart-2) 24%, transparent) 0%,
+        transparent 72%
       ),
       radial-gradient(
-        45% 45% at 60% 90%,
-        color-mix(in oklch, var(--chart-3) 22%, transparent) 0%,
-        transparent 70%
+        46% 42% at 60% 95%,
+        color-mix(in oklch, var(--chart-3) 18%, transparent) 0%,
+        transparent 72%
       );
-    filter: blur(60px);
-    animation: var(--animate-aurora-drift);
+    filter: blur(48px);
+    animation: aurora-fade 14s ease-in-out infinite alternate;
+    will-change: opacity;
+  }
+
+  @keyframes aurora-fade {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.75; }
   }
 
   /* Faint dotted grid texture (dots, not lines — softer). */
   .bg-grid {
     background-image: radial-gradient(
-      color-mix(in oklch, var(--foreground) 9%, transparent) 1px,
+      color-mix(in oklch, var(--foreground) 12%, transparent) 1px,
       transparent 1px
     );
-    background-size: 24px 24px;
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 80%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 80%);
   }
 
   /* Line grid */
@@ -251,12 +276,12 @@
     background-image:
       linear-gradient(
         to right,
-        color-mix(in oklch, var(--foreground) 6%, transparent) 1px,
+        color-mix(in oklch, var(--foreground) 7%, transparent) 1px,
         transparent 1px
       ),
       linear-gradient(
         to bottom,
-        color-mix(in oklch, var(--foreground) 6%, transparent) 1px,
+        color-mix(in oklch, var(--foreground) 7%, transparent) 1px,
         transparent 1px
       );
     background-size: 36px 36px;
@@ -318,7 +343,7 @@
     animation: var(--animate-gradient-pan);
   }
 
-  /* Conic spinner glow */
+  /* Conic spinner glow — contained, lower opacity to avoid banding */
   .conic-glow {
     background: conic-gradient(
       from 0deg,
@@ -327,8 +352,21 @@
       var(--chart-3),
       var(--primary)
     );
-    filter: blur(40px);
-    opacity: 0.5;
+    filter: blur(32px);
+    opacity: 0.4;
+  }
+
+  /* Frosted glass surface — backdrop blur + saturation boost so the glass
+     reads crisp instead of washed out. */
+  .glass {
+    background-color: color-mix(in oklch, var(--card) 72%, transparent);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+  .glass-strong {
+    background-color: color-mix(in oklch, var(--card) 88%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
 
   /* Live "recording" dot for the timer */

@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, FileText, Receipt, TrendingUp } from "lucide-react";
+import { Clock, FileText, TrendingUp } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BRAND } from "@/lib/brand";
 import { EASE_OUT } from "@/components/motion/easing";
+import { BrandMark } from "@/components/brand/brand-mark";
 
 const proofPoints = [
   {
@@ -57,9 +58,7 @@ export default function AuthLayout({
             href="/"
             className="relative z-10 flex items-center gap-2.5 font-heading text-lg font-semibold"
           >
-            <span className="flex size-8 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/25 backdrop-blur">
-              <Receipt className="size-4" />
-            </span>
+            <BrandMark size={32} />
             {BRAND.name}
           </Link>
         </motion.div>
@@ -140,9 +139,7 @@ export default function AuthLayout({
             href="/"
             className="mb-8 flex items-center gap-2.5 font-heading text-lg font-semibold lg:hidden"
           >
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Receipt className="size-4" />
-            </span>
+            <BrandMark size={32} />
             {BRAND.name}
           </Link>
 

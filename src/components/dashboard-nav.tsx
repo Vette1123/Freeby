@@ -17,7 +17,7 @@ const links = [
 export function DashboardNav() {
   const pathname = usePathname();
   return (
-    <nav className="flex items-center gap-0.5 overflow-x-auto">
+    <nav className="flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {links.map((l) => {
         const active = l.exact
           ? pathname === l.href
@@ -27,13 +27,16 @@ export function DashboardNav() {
             key={l.href}
             href={l.href}
             className={cn(
-              "whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "relative whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               active
-                ? "bg-accent text-accent-foreground"
+                ? "text-primary"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
-            {l.label}
+            {active && (
+              <span className="absolute inset-0 rounded-lg bg-primary/10 ring-1 ring-inset ring-primary/20" />
+            )}
+            <span className="relative">{l.label}</span>
           </Link>
         );
       })}

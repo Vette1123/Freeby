@@ -161,9 +161,8 @@ export default async function Home() {
       {/* App preview mockup */}
       <section className="mx-auto w-full max-w-4xl px-6 pb-24">
         <div className="relative">
-          {/* Animated glow behind the card */}
-          <div className="absolute -inset-x-8 -inset-y-4 -z-10 rounded-[2.5rem] bg-gradient-to-b from-primary/25 via-primary/5 to-transparent blur-3xl" />
-          <div className="conic-glow absolute -inset-x-4 -top-8 -bottom-8 -z-20 rounded-full opacity-30" />
+          {/* Soft glow behind the card — single layer, no double-blur */}
+          <div className="absolute -inset-x-6 -inset-y-3 -z-10 rounded-[2rem] bg-gradient-to-b from-primary/15 to-transparent blur-2xl" />
           <DashboardMockup />
         </div>
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ReceiptText } from "lucide-react";
 import { brandHost } from "@/lib/brand";
 import { GithubIcon, LinkedinIcon, XIcon } from "@/components/icons/brand-icons";
+import { BrandWordmark } from "@/components/brand/brand-mark";
 
 /**
  * Site footer for public marketing pages (landing + pricing).
@@ -81,12 +81,7 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand + tagline + maker */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 font-heading text-base font-semibold">
-              <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <ReceiptText className="size-4" />
-              </span>
-              Freeby
-            </div>
+            <BrandWordmark size={28} />
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               Invoicing &amp; time tracking for freelancers. Track time, send
               professional invoices, and get paid — in one unbroken flow.
