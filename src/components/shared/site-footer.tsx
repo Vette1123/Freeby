@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { ReceiptText } from "lucide-react";
 import { brandHost } from "@/lib/brand";
+import { GithubIcon, LinkedinIcon, XIcon } from "@/components/icons/brand-icons";
 
 /**
  * Site footer for public marketing pages (landing + pricing).
  *
  * Reflects the maker (Mohamed Gado, mohamedgado.com) for personal-brand SEO,
- * and carries a Person JSON-LD block so search engines link the product to its
- * author.
+ * and carries a Person JSON-LD block with `sameAs` so search engines can
+ * corroborate the author's identity across the web — the strongest
+ * E-E-A-T (Experience, Expertise, Authoritativeness, Trust) signal for a
+ * person-linked product.
  */
 
 const productLinks = [
@@ -24,20 +27,32 @@ const resourceLinks = [
   { label: "Discussions", href: "https://github.com/Vette1123/Freeby/discussions" },
 ];
 
-// The maker's personal site — external, so we keep crawl budget tidy with
-// rel="noopener" and let link equity flow (do-follow: this is a real endorsement).
-const MAKER_SITE = "https://mohamedgado.com";
-const MAKER_HANDLE = "Mohamed Gado";
+// Maker identity — these URLs are also mirrored in the Person schema `sameAs`.
+const MAKER = {
+  name: "Mohamed Gado",
+  site: "https://mohamedgado.com",
+  linkedin: "https://www.linkedin.com/in/mgado/",
+  github: "https://github.com/Vette1123",
+  x: "https://x.com/Sadge1996",
+};
+
+const socials = [
+  { label: "GitHub", href: MAKER.github, Icon: GithubIcon },
+  { label: "LinkedIn", href: MAKER.linkedin, Icon: LinkedinIcon },
+  { label: "X", href: MAKER.x, Icon: XIcon },
+];
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
-  // JSON-LD: links the product to its author for richer personal search results.
+  // Person JSON-LD — links the product to its author and corroborates identity
+  // across the web via `sameAs`. This is what Google uses to connect your
+  // website, GitHub, LinkedIn, and X as the same person (E-E-A-T signal).
   const personLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: MAKER_HANDLE,
-    url: MAKER_SITE,
+    name: MAKER.name,
+    url: MAKER.site,
     jobTitle: "Software Engineer",
     knowsAbout: [
       "Web Development",
@@ -45,6 +60,10 @@ export function SiteFooter() {
       "Next.js",
       "Product Engineering",
     ],
+    // `sameAs` is THE key field — Google cross-checks these to verify you are
+    // who you say you are. Every profile should link back to mohamedgado.com
+    // (or share a consistent identity) for maximum corroboration.
+    sameAs: [MAKER.site, MAKER.github, MAKER.linkedin, MAKER.x],
     creatorOf: {
       "@type": "SoftwareApplication",
       name: "Freeby",
@@ -60,7 +79,7 @@ export function SiteFooter() {
       />
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand + tagline */}
+          {/* Brand + tagline + maker */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 font-heading text-base font-semibold">
               <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -75,14 +94,33 @@ export function SiteFooter() {
             <p className="mt-4 text-xs text-muted-foreground">
               Built by{" "}
               <a
-                href={MAKER_SITE}
+                href={MAKER.site}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-foreground underline-offset-4 hover:underline"
               >
-                {MAKER_HANDLE}
+                {MAKER.name}
               </a>
             </p>
+
+            {/* Social identity links — rel="me" tells platforms these are YOUR
+                profiles (used by Mastodon/IndieWeb verification, and reinforces
+                the sameAs graph for search engines). */}
+            <div className="mt-3 flex items-center gap-1">
+              {socials.map(({ label, href, Icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  aria-label={`${MAKER.name} on ${label}`}
+                  title={`${MAKER.name} on ${label}`}
+                  className="flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Icon className="size-4" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Product */}
@@ -133,7 +171,7 @@ export function SiteFooter() {
             <span className="hidden sm:inline">
               Made with care by{" "}
               <a
-                href={MAKER_SITE}
+                href={MAKER.site}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-foreground underline-offset-4 hover:underline"
