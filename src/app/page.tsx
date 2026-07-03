@@ -16,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/get-session";
 import { StructuredData } from "@/components/seo/structured-data";
+import { SiteFooter } from "@/components/shared/site-footer";
 
 export const metadata = {
   title: "Freeby — Invoicing & Time Tracking for Freelancers",
@@ -433,18 +434,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/40 py-8">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <ReceiptText className="size-3" />
-            </span>
-            Freeby
-          </div>
-          <p>© {new Date().getFullYear()} Freeby. Invoicing without the bloat.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
