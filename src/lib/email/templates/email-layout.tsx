@@ -44,7 +44,7 @@ export function EmailLayout({
         <Container style={container}>
           <Section style={brandWrap}>
             <Text style={brand}>
-              <span style={brandDot}>●</span> better-auth-starter
+              <span style={brandDot}>●</span> Freeby
             </Text>
           </Section>
 
@@ -72,7 +72,7 @@ export function EmailLayout({
           </Section>
 
           <Text style={legal}>
-            © {new Date().getFullYear()} better-auth-starter · Sent because an
+            © {new Date().getFullYear()} Freeby · Sent because an
             action was requested for your account.
           </Text>
         </Container>
@@ -107,7 +107,7 @@ const brand: React.CSSProperties = {
 };
 
 const brandDot: React.CSSProperties = {
-  color: "#059669",
+  color: "#4f46e5",
   marginRight: "6px",
 };
 
@@ -140,7 +140,7 @@ const buttonWrap: React.CSSProperties = {
 };
 
 const button: React.CSSProperties = {
-  backgroundColor: "#059669",
+  backgroundColor: "#4f46e5",
   color: "#ffffff",
   fontSize: "15px",
   fontWeight: 600,
@@ -158,7 +158,7 @@ const fallbackLabel: React.CSSProperties = {
 
 const fallbackLink: React.CSSProperties = {
   fontSize: "13px",
-  color: "#059669",
+  color: "#4f46e5",
   wordBreak: "break-all",
   textDecoration: "none",
 };
