@@ -8,7 +8,10 @@ export default function manifest(): MetadataRoute.Manifest {
     description:
       "Clean, fast invoicing and time tracking for freelancers — timer, projects, and invoices in one unbroken flow.",
     start_url: "/",
-    display: "standalone",
+    // "browser" (not "standalone") so Chrome/Edge don't treat Freeby as an
+    // installable PWA and pop the "Install app" prompt. The manifest still
+    // provides theme color, icons, and metadata.
+    display: "browser",
     background_color: BRAND.ink,
     theme_color: BRAND.indigo,
     icons: [
