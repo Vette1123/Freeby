@@ -39,7 +39,7 @@ export default async function PricingPage() {
   const session = await getSession();
 
   return (
-    <div className="bg-aurora-animated relative flex min-h-svh flex-col">
+    <div className="bg-aurora-animated relative flex min-h-svh flex-col overflow-x-clip">
       <MarketingNav isAuthenticated={!!session} />
 
       {/* Pricing */}

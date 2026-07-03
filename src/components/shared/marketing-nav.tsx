@@ -67,7 +67,14 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveId(visible[0].target.id);
+        if (visible[0]) {
+          setActiveId(visible[0].target.id);
+        } else {
+          // Nothing in the spy zone — user is back at the hero (or below
+          // all tracked sections). Clear the highlight so no link shows
+          // stale "active" state (e.g. after clicking the logo to go home).
+          setActiveId(null);
+        }
       },
       {
         // Trigger when a section's top crosses ~30% from the viewport top,
@@ -77,6 +84,20 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
       },
     );
     sections.forEach((s) => observer.observe(s));
+
+    // Seed: immediately pick whichever section is already in view, so a
+    // fresh load deep into the page highlights correctly without a scroll.
+    const seed = () => {
+      const visible = sections
+        .filter((s) => {
+          const r = s.getBoundingClientRect();
+          return r.top < window.innerHeight * 0.7 && r.bottom > window.innerHeight * 0.3;
+        })
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+      setActiveId(visible[0]?.id ?? null);
+    };
+    seed();
+
     return () => observer.disconnect();
   }, [pathname]);
 

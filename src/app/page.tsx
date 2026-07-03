@@ -150,7 +150,7 @@ export default async function Home() {
   const session = await getSession();
 
   return (
-    <div className="bg-aurora-animated relative flex min-h-svh flex-col">
+    <div className="bg-aurora-animated relative flex min-h-svh flex-col overflow-x-clip">
       <StructuredData />
       <MarketingNav isAuthenticated={!!session} />
       <main className="relative flex flex-1 flex-col overflow-hidden">
