@@ -9,10 +9,11 @@ The freelancer's toolkit built around **one unbroken flow**:
 
 No 47-tab nightmare. No learning curve. No bloat.
 
-[![CI](https://github.com/Vette1123/freeby/actions/workflows/ci.yml/badge.svg)](https://github.com/Vette1123/freeby/actions/workflows/ci.yml)
+[![CI](https://github.com/Vette1123/Freeby/actions/workflows/ci.yml/badge.svg)](https://github.com/Vette1123/Freeby/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen.svg)](./package.json)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![Discussions](https://img.shields.io/badge/Discussions-welcome-9cf.svg)](https://github.com/Vette1123/Freeby/discussions)
 
 [Features](#-features) ·
 [Why Freeby](#-why-freeby) ·
@@ -76,7 +77,7 @@ Powered by **Lemon Squeezy** (Merchant of Record) — they deal with sales tax, 
 **Self-hosting** (free, open):
 
 ```bash
-git clone https://github.com/Vette1123/freeby.git
+git clone https://github.com/Vette1123/Freeby.git
 cd freeby
 pnpm install
 cp .env.example .env   # then fill in your credentials

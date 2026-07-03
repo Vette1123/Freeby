@@ -6,7 +6,7 @@ and productive.
 ## Quick start
 
 ```bash
-git clone https://github.com/Vette1123/freeby.git
+git clone https://github.com/Vette1123/Freeby.git
 cd freeby
 pnpm install
 cp .env.example .env   # then fill in your credentials
@@ -101,7 +101,7 @@ database. Follow that pattern for new logic.
 
 ## Reporting bugs
 
-Use the [bug report template](https://github.com/Vette1123/freeby/issues/new).
+Use the [bug report template](https://github.com/Vette1123/Freeby/issues/new).
 Include reproduction steps, expected vs. actual behavior, and your
 browser/OS.
 
@@ -112,5 +112,5 @@ disclosure.
 
 ## Questions?
 
-Open a [discussion](https://github.com/Vette1123/freeby/discussions) — happy to
+Open a [discussion](https://github.com/Vette1123/Freeby/discussions) — happy to
 help.

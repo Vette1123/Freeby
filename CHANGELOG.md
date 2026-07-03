@@ -33,5 +33,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Unit tests** — money math, invoice numbering, subscription gating, and
   validations (36 passing).
 
-[Unreleased]: https://github.com/Vette1123/freeby/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/Vette1123/freeby/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Vette1123/Freeby/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Vette1123/Freeby/releases/tag/v0.1.0

@@ -5,13 +5,13 @@
   "description": "Clean invoicing & time tracking for freelancers. Track time → bill it → get paid. One unbroken flow, zero bloat.",
   "license": "MIT",
   "author": "Mohamed Gado",
-  "homepage": "https://github.com/Vette1123/freeby",
+  "homepage": "https://github.com/Vette1123/Freeby",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vette1123/freeby.git"
+    "url": "https://github.com/Vette1123/Freeby.git"
   },
   "bugs": {
-    "url": "https://github.com/Vette1123/freeby/issues"
+    "url": "https://github.com/Vette1123/Freeby/issues"
   },
   "keywords": [
     "nextjs",

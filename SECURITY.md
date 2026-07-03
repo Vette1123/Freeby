@@ -11,7 +11,7 @@ contributions.
 Instead, report them **privately** using one of these methods:
 
 - **GitHub Security Advisories** — go to the
-  [Security tab](https://github.com/Vette1123/freeby/security/advisories/new)
+  [Security tab](https://github.com/Vette1123/Freeby/security/advisories/new)
   and create a private advisory.
 - **Email** — send details to **security@freeby.app** (encrypt with our PGP key
   if available).
