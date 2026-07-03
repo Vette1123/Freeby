@@ -27,8 +27,8 @@
     "lemon-squeezy"
   ],
   "engines": {
-    "node": ">=24",
-    "pnpm": ">=11"
+    "node": ">=20",
+    "pnpm": ">=9"
   },
   "scripts": {
     "dev": "next dev",
