@@ -9,22 +9,22 @@ import {
   Zap,
   Shield,
   Globe,
-  ReceiptText,
   Star,
   Infinity as InfinityIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/get-session";
 import { StructuredData } from "@/components/seo/structured-data";
 import { SiteFooter } from "@/components/shared/site-footer";
+import { MarketingNav } from "@/components/shared/marketing-nav";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { Hero } from "@/components/landing/hero";
 import { DashboardMockup } from "@/components/landing/dashboard-mockup";
 import { LogoMarquee } from "@/components/landing/logo-marquee";
 import { TiltCard } from "@/components/landing/tilt-card";
+import { PricingPreview } from "@/components/landing/pricing-preview";
 
 export const metadata = {
   title: "Freeby — Invoicing & Time Tracking for Freelancers",
@@ -153,47 +153,7 @@ export default async function Home() {
     <main className="bg-aurora-animated relative flex min-h-svh flex-col overflow-hidden">
       <StructuredData />
 
-      {/* Nav */}
-      <header className="sticky top-0 z-40 border-b border-border/40 bg-background/70 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 font-heading text-lg font-semibold transition-opacity hover:opacity-80"
-          >
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm shadow-primary/30">
-              <ReceiptText className="size-4" />
-            </span>
-            Freeby
-          </Link>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            {session ? (
-              <Link
-                href="/dashboard"
-                className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className={cn(buttonVariants({ variant: "ghost" }), "rounded-full")}
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/signup"
-                  className={cn(buttonVariants(), "rounded-full shadow-sm shadow-primary/30")}
-                >
-                  Start free
-                  <ArrowRight className="size-4" />
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <MarketingNav isAuthenticated={!!session} />
 
       {/* Hero */}
       <Hero isAuthenticated={!!session} />
@@ -375,6 +335,11 @@ export default async function Home() {
             </StaggerItem>
           ))}
         </Stagger>
+      </section>
+
+      {/* Pricing preview */}
+      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-20 px-6 pb-24">
+        <PricingPreview isAuthenticated={!!session} />
       </section>
 
       {/* CTA */}
