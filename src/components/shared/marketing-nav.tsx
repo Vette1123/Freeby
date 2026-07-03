@@ -10,25 +10,32 @@ import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { BrandWordmark } from "@/components/brand/brand-mark";
 
+/**
+ * Nav entries. `id` (when present) enables scroll-spy: the link is marked
+ * active when that section is in view on the landing page.
+ */
 const NAV_LINKS = [
-  { label: "Features", href: "/#features" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "FAQ", href: "/#faq" },
-];
+  { label: "Features", href: "/#features", id: "features" },
+  { label: "Pricing", href: "/#pricing", id: "pricing" },
+  { label: "FAQ", href: "/#faq", id: "faq" },
+] as const;
 
 /**
  * Sticky scroll-aware marketing nav.
  * - Transparent at the top, frosted + bordered once scrolled > 8px.
  * - backdrop-blur + backdrop-saturate for crisp, non-washed-out glass.
- * - Animated underlines on nav links.
+ * - Scroll-spy: highlights the section currently in view (Features/Pricing/FAQ).
+ * - Animated pill highlight that slides between active links.
  * - Mobile slide-down menu.
  */
 export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
+  // Shadow on scroll
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -36,12 +43,49 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Scroll-spy: watch the landing-page sections and mark the active one.
+  // The setActiveId calls live inside the IntersectionObserver callback
+  // (an async boundary), not in the effect body — this is the pattern the
+  // react-hooks/set-state-in-effect rule considers safe.
+  useEffect(() => {
+    const isLanding = pathname === "/";
+    const ids = NAV_LINKS.map((l) => l.id).filter(Boolean) as string[];
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    // Reset on routes without sections; on landing, seed from scroll position.
+    if (!isLanding || sections.length === 0) {
+      const reset = () => setActiveId(null);
+      reset();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry closest to the top that's currently intersecting.
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActiveId(visible[0].target.id);
+      },
+      {
+        // Trigger when a section's top crosses ~30% from the viewport top,
+        // accounting for the sticky header height.
+        rootMargin: "-30% 0px -60% 0px",
+        threshold: 0,
+      },
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [pathname]);
+
   return (
     <header
       className={cn(
         "sticky top-0 z-50 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
-        scrolled
-          ? "border-b border-border/60 bg-background/80 shadow-sm shadow-black/[0.03] backdrop-blur-xl backdrop-saturate-150"
+        scrolled || open
+          ? "glass-strong border-b border-border/60 shadow-sm shadow-black/[0.03]"
           : "border-b border-transparent bg-transparent",
       )}
     >
@@ -53,10 +97,10 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
           <BrandWordmark glow={scrolled} />
         </Link>
 
-        {/* Desktop center links */}
+        {/* Desktop center links with sliding pill */}
         <nav className="hidden items-center gap-1 md:flex">
           {NAV_LINKS.map((link) => {
-            const active = pathname === link.href;
+            const active = pathname === "/" && link.id === activeId;
             return (
               <Link
                 key={link.href}
@@ -64,17 +108,21 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
                 className={cn(
                   "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
                   active
-                    ? "text-foreground"
+                    ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {link.label}
-                <span
-                  className={cn(
-                    "pointer-events-none absolute inset-x-3.5 -bottom-0.5 h-px origin-center bg-primary transition-transform duration-300",
-                    active ? "scale-x-100" : "scale-x-0",
-                  )}
-                />
+                {active && !reduce && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-primary shadow-sm shadow-primary/30"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+                {active && reduce && (
+                  <span className="absolute inset-0 rounded-full bg-primary" />
+                )}
+                <span className="relative z-10">{link.label}</span>
               </Link>
             );
           })}
@@ -141,16 +189,24 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
             className="border-b border-border/60 bg-background/95 backdrop-blur-xl backdrop-saturate-150 md:hidden"
           >
             <nav className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-base font-medium text-foreground/90 transition-colors hover:bg-muted"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const active = pathname === "/" && link.id === activeId;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "rounded-lg px-3 py-2.5 text-base font-medium transition-colors",
+                      active
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground/90 hover:bg-muted",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
               <div className="mt-2 flex flex-col gap-2 border-t border-border/60 pt-3">
                 {isAuthenticated ? (
                   <Link

@@ -150,11 +150,10 @@ export default async function Home() {
   const session = await getSession();
 
   return (
-    <main className="bg-aurora-animated relative flex min-h-svh flex-col overflow-hidden">
+    <div className="bg-aurora-animated relative flex min-h-svh flex-col">
       <StructuredData />
-
       <MarketingNav isAuthenticated={!!session} />
-
+      <main className="relative flex flex-1 flex-col overflow-hidden">
       {/* Hero */}
       <Hero isAuthenticated={!!session} />
 
@@ -232,7 +231,7 @@ export default async function Home() {
       </Reveal>
 
       {/* Features */}
-      <section id="features" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24">
+      <section id="features" className="mx-auto w-full max-w-6xl scroll-mt-24 px-6 py-24">
         <Reveal as="div" className="mx-auto max-w-2xl text-center">
           <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             Features
@@ -307,7 +306,7 @@ export default async function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto w-full max-w-3xl px-6 pb-24">
+      <section id="faq" className="mx-auto w-full max-w-3xl scroll-mt-24 px-6 pb-24">
         <Reveal as="div" className="mb-10 text-center">
           <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             FAQ
@@ -337,7 +336,7 @@ export default async function Home() {
       </section>
 
       {/* Pricing preview */}
-      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-20 px-6 pb-24">
+      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-24 px-6 pb-24">
         <PricingPreview isAuthenticated={!!session} />
       </section>
 
@@ -375,7 +374,9 @@ export default async function Home() {
         </Reveal>
       </section>
 
+      </main>
+
       <SiteFooter />
-    </main>
+    </div>
   );
 }

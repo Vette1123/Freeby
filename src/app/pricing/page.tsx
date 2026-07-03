@@ -39,11 +39,12 @@ export default async function PricingPage() {
   const session = await getSession();
 
   return (
-    <main className="bg-aurora-animated relative flex min-h-svh flex-col overflow-hidden">
+    <div className="bg-aurora-animated relative flex min-h-svh flex-col">
       <MarketingNav isAuthenticated={!!session} />
 
       {/* Pricing */}
-      <section className="mx-auto w-full max-w-5xl flex-1 px-6 py-16">
+      <main className="relative flex flex-1 flex-col overflow-hidden">
+      <section className="mx-auto w-full max-w-5xl px-6 py-16">
         <PricingPreview isAuthenticated={!!session} />
 
         {/* FAQ */}
@@ -76,8 +77,9 @@ export default async function PricingPage() {
           </Stagger>
         </div>
       </section>
+      </main>
 
       <SiteFooter />
-    </main>
+    </div>
   );
 }
