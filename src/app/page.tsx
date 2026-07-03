@@ -10,6 +10,8 @@ import {
   Shield,
   Globe,
   ReceiptText,
+  Star,
+  Infinity as InfinityIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -17,6 +19,12 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/get-session";
 import { StructuredData } from "@/components/seo/structured-data";
 import { SiteFooter } from "@/components/shared/site-footer";
+import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { Hero } from "@/components/landing/hero";
+import { DashboardMockup } from "@/components/landing/dashboard-mockup";
+import { LogoMarquee } from "@/components/landing/logo-marquee";
+import { TiltCard } from "@/components/landing/tilt-card";
 
 export const metadata = {
   title: "Freeby — Invoicing & Time Tracking for Freelancers",
@@ -115,215 +123,143 @@ const testimonials = [
   },
 ];
 
+const faqs = [
+  {
+    q: "Is Freeby really free?",
+    a: "Yes. The Free plan covers 1 client and 3 invoices a month, forever, no credit card. Pro ($19/mo) unlocks unlimited clients, invoices, and time tracking.",
+  },
+  {
+    q: "Can I import my clients and invoices?",
+    a: "You can add clients manually in seconds. We're working on CSV import for invoices — if you need it now, reach out and we'll help you migrate.",
+  },
+  {
+    q: "Does the timer work if I close the tab?",
+    a: "The timer keeps running on the server. Reopen the tab and it's still ticking — no lost hours, no manual catch-up.",
+  },
+  {
+    q: "How do payments work?",
+    a: "You send a PDF invoice by email and mark it paid when the money lands. We don't touch your funds — there's no payment-processing fee.",
+  },
+  {
+    q: "Can I cancel anytime?",
+    a: "Anytime, from your billing settings. Cancel Pro and you drop back to the Free plan — your data stays intact.",
+  },
+];
+
 export default async function Home() {
   const session = await getSession();
 
   return (
-    <main className="bg-aurora relative flex min-h-svh flex-col overflow-hidden">
+    <main className="bg-aurora-animated relative flex min-h-svh flex-col overflow-hidden">
       <StructuredData />
+
       {/* Nav */}
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2.5 font-heading text-lg font-semibold">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <ReceiptText className="size-4" />
-          </span>
-          Freeby
-        </div>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          {session ? (
-            <Link
-              href="/dashboard"
-              className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
-            >
-              Dashboard
-            </Link>
-          ) : (
-            <>
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-background/70 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-3.5">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 font-heading text-lg font-semibold transition-opacity hover:opacity-80"
+          >
+            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm shadow-primary/30">
+              <ReceiptText className="size-4" />
+            </span>
+            Freeby
+          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            {session ? (
               <Link
-                href="/login"
-                className={cn(
-                  buttonVariants({ variant: "ghost" }),
-                  "rounded-full",
-                )}
+                href="/dashboard"
+                className={cn(buttonVariants({ variant: "outline" }), "rounded-full")}
               >
-                Log in
+                Dashboard
               </Link>
-              <Link
-                href="/signup"
-                className={cn(buttonVariants(), "rounded-full")}
-              >
-                Start free
-                <ArrowRight className="size-4" />
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className={cn(buttonVariants({ variant: "ghost" }), "rounded-full")}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className={cn(buttonVariants(), "rounded-full shadow-sm shadow-primary/30")}
+                >
+                  Start free
+                  <ArrowRight className="size-4" />
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-6 pb-20 pt-12 text-center">
-        <span className="mb-7 inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/60 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur">
-          <Sparkles className="size-3.5 text-primary" />
-          Invoicing without the bloat
-        </span>
-
-        <h1 className="font-heading text-5xl font-semibold leading-[1.05] sm:text-6xl md:text-7xl">
-          Track time.
-          <br />
-          Send invoices.
-          <br />
-          <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Get paid.
-          </span>
-        </h1>
-
-        <p className="mt-7 max-w-xl text-lg text-muted-foreground sm:text-xl">
-          The freelancer billing tool with one unbroken flow — from a running
-          timer to a paid invoice. No 47-tab nightmare. No bloat. Just getting
-          paid.
-        </p>
-
-        <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-          <Link
-            href={session ? "/dashboard" : "/signup"}
-            className={cn(
-              buttonVariants({ size: "lg" }),
-              "h-12 rounded-xl px-7 text-[0.95rem]",
-            )}
-          >
-            {session ? "Go to dashboard" : "Start free — it's $0"}
-            <ArrowRight className="size-4" />
-          </Link>
-          <Link
-            href="/pricing"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "h-12 rounded-xl px-7 text-[0.95rem]",
-            )}
-          >
-            See pricing
-          </Link>
-        </div>
-
-        <p className="mt-5 text-sm text-muted-foreground">
-          Free forever · Pro from $19/mo · No credit card to start
-        </p>
-      </section>
+      <Hero isAuthenticated={!!session} />
 
       {/* App preview mockup */}
       <section className="mx-auto w-full max-w-4xl px-6 pb-24">
         <div className="relative">
-          {/* Glow behind the card */}
-          <div className="absolute -inset-x-8 -inset-y-4 -z-10 rounded-[2rem] bg-gradient-to-b from-primary/20 via-primary/5 to-transparent blur-2xl" />
-          <div className="overflow-hidden rounded-2xl border border-border/60 bg-card/80 shadow-2xl backdrop-blur">
-            {/* Window chrome */}
-            <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3">
-              <span className="size-3 rounded-full bg-rose-400/70" />
-              <span className="size-3 rounded-full bg-amber-400/70" />
-              <span className="size-3 rounded-full bg-emerald-400/70" />
-              <span className="ml-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-                <ReceiptText className="size-3" />
-                freeby.app/dashboard
-              </span>
-            </div>
-            {/* App body */}
-            <div className="grid gap-4 p-5 sm:grid-cols-3">
-              {/* Stat cards */}
-              <div className="rounded-xl bg-muted/40 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Outstanding
-                </p>
-                <p className="mt-1 font-heading text-2xl font-semibold text-amber-500">
-                  $4,250
-                </p>
-              </div>
-              <div className="rounded-xl bg-muted/40 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Tracked (7d)
-                </p>
-                <p className="mt-1 font-heading text-2xl font-semibold">
-                  32h 15m
-                </p>
-              </div>
-              <div className="rounded-xl bg-muted/40 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Clients
-                </p>
-                <p className="mt-1 font-heading text-2xl font-semibold">12</p>
-              </div>
-            </div>
-            {/* Timer row */}
-            <div className="flex items-center gap-4 px-5 pb-5">
-              <div className="flex items-center gap-3 rounded-xl bg-primary/5 px-4 py-3 ring-1 ring-primary/20">
-                <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Clock className="size-4" />
-                </span>
-                <div>
-                  <p className="font-heading text-lg font-semibold tabular-nums text-primary">
-                    01:23:45
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Website redesign
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* Invoice rows */}
-            <div className="space-y-1.5 px-5 pb-5">
-              {[
-                { num: "INV-0042", status: "paid", color: "bg-emerald-500" },
-                { num: "INV-0041", status: "sent", color: "bg-amber-500" },
-                { num: "INV-0040", status: "paid", color: "bg-emerald-500" },
-              ].map((row) => (
-                <div
-                  key={row.num}
-                  className="flex items-center justify-between rounded-lg bg-muted/20 px-3 py-2 text-sm"
-                >
-                  <span className="font-medium">{row.num}</span>
-                  <span className="flex items-center gap-2">
-                    <span className={`${row.color} size-2 rounded-full`} />
-                    <span className="capitalize text-muted-foreground">
-                      {row.status}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
+          {/* Animated glow behind the card */}
+          <div className="absolute -inset-x-8 -inset-y-4 -z-10 rounded-[2.5rem] bg-gradient-to-b from-primary/25 via-primary/5 to-transparent blur-3xl" />
+          <div className="conic-glow absolute -inset-x-4 -top-8 -bottom-8 -z-20 rounded-full opacity-30" />
+          <DashboardMockup />
+        </div>
+
+        {/* "Replaced from" marquee */}
+        <div className="mt-16">
+          <p className="text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            Replacing the bloated stack
+          </p>
+          <div className="mt-4">
+            <LogoMarquee />
           </div>
         </div>
       </section>
 
       {/* Flow section */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
+        <Reveal as="div" className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            The flow
+          </span>
+          <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
+            Three steps. One flow.
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            From a running timer to money in the bank — no copy-paste between
+            five different apps.
+          </p>
+        </Reveal>
+
         <div className="grid gap-6 md:grid-cols-3">
           {flow.map((f, i) => (
-            <div
-              key={f.title}
-              className="relative rounded-2xl border border-border/60 bg-card/50 p-6 backdrop-blur"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <f.icon className="size-5" />
-                </span>
-                <span className="font-heading text-2xl font-bold text-muted-foreground/30">
-                  {f.step}
-                </span>
+            <Reveal key={f.title} delay={i * 0.1}>
+              <div className="group relative h-full rounded-2xl border border-border/60 bg-card/50 p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                    <f.icon className="size-5" />
+                  </span>
+                  <span className="font-heading text-3xl font-bold text-muted-foreground/20 transition-colors group-hover:text-primary/20">
+                    {f.step}
+                  </span>
+                </div>
+                <h3 className="font-heading text-lg font-semibold">{f.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {f.description}
+                </p>
+                {i < flow.length - 1 && (
+                  <ArrowRight className="absolute -right-3 top-1/2 hidden size-5 -translate-y-1/2 text-muted-foreground/40 md:block" />
+                )}
               </div>
-              <h3 className="font-heading text-lg font-semibold">{f.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                {f.description}
-              </p>
-              {i < flow.length - 1 && (
-                <ArrowRight className="absolute -right-3 top-1/2 hidden size-5 -translate-y-1/2 text-muted-foreground/40 md:block" />
-              )}
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Stats band */}
-      <section className="border-y border-border/40 bg-card/30 backdrop-blur">
+      <Reveal as="section" className="border-y border-border/40 bg-card/30 backdrop-blur">
         <div className="mx-auto grid w-full max-w-4xl grid-cols-3 gap-4 px-6 py-10">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
@@ -334,11 +270,14 @@ export default async function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       {/* Features */}
-      <section className="mx-auto w-full max-w-6xl px-6 py-24">
-        <div className="mx-auto max-w-2xl text-center">
+      <section id="features" className="mx-auto w-full max-w-6xl scroll-mt-20 px-6 py-24">
+        <Reveal as="div" className="mx-auto max-w-2xl text-center">
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            Features
+          </span>
           <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
             Everything you need.
             <br />
@@ -348,90 +287,128 @@ export default async function Home() {
             Built by a freelancer who got tired of paying $30/month for
             software with more tabs than features.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <div
-              key={f.title}
-              className="rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur transition-colors hover:bg-card/70"
-            >
-              <span className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <f.icon className="size-5" />
-              </span>
-              <h3 className="font-heading font-semibold">{f.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                {f.description}
-              </p>
-            </div>
+            <StaggerItem key={f.title}>
+              <TiltCard className="group relative h-full rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur transition-colors hover:border-primary/30 hover:bg-card/70">
+                <span className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                  <f.icon className="size-5" />
+                </span>
+                <h3 className="font-heading font-semibold">{f.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {f.description}
+                </p>
+              </TiltCard>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* Testimonials */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-24">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal as="div" className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            Testimonials
+          </span>
           <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
             Loved by freelancers
           </h2>
           <p className="mt-4 text-muted-foreground">
             Who switched from the bloated incumbents.
           </p>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="flex flex-col rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur"
-            >
-              <div className="mb-3 flex gap-0.5 text-amber-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Sparkles key={i} className="size-3.5 fill-current" />
-                ))}
-              </div>
-              <p className="flex-1 text-sm leading-relaxed text-foreground/90">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="mt-5 flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-full bg-primary/10 font-heading text-sm font-semibold text-primary">
-                  {t.name.charAt(0)}
-                </span>
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+        </Reveal>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <Reveal key={t.name} delay={i * 0.1}>
+              <div className="flex h-full flex-col rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur">
+                <div className="mb-3 flex gap-0.5 text-amber-400">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <Star key={j} className="size-3.5 fill-current" />
+                  ))}
+                </div>
+                <p className="flex-1 text-sm leading-relaxed text-foreground/90">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div className="mt-5 flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-full bg-primary/10 font-heading text-sm font-semibold text-primary">
+                    {t.name.charAt(0)}
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="mx-auto w-full max-w-3xl px-6 pb-24">
+        <Reveal as="div" className="mb-10 text-center">
+          <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            FAQ
+          </span>
+          <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
+            Questions, answered
+          </h2>
+        </Reveal>
+
+        <Stagger className="space-y-3">
+          {faqs.map((f) => (
+            <StaggerItem key={f.q}>
+              <details className="group rounded-xl border border-border/60 bg-card/40 px-5 py-4 backdrop-blur transition-colors hover:border-primary/30">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
+                  {f.q}
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {f.a}
+                </p>
+              </details>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto w-full max-w-4xl px-6 pb-24">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/70 p-10 text-center text-primary-foreground sm:p-16">
-          <div className="absolute inset-0 bg-grid opacity-10" />
-          <div className="relative">
-            <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
-              Stop chasing payments.
-              <br />
-              Start getting paid.
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-primary-foreground/80">
-              Join the freelancers who replaced their bloated billing software
-              with something that just works.
-            </p>
-            <Link
-              href={session ? "/dashboard" : "/signup"}
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "mt-8 h-12 rounded-xl bg-background px-8 text-[0.95rem] text-foreground hover:bg-background/90",
-              )}
-            >
-              {session ? "Open dashboard" : "Get started — free"}
-              <ArrowRight className="size-4" />
-            </Link>
+        <Reveal>
+          <div className="gradient-border relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/70 p-10 text-center text-primary-foreground shadow-2xl shadow-primary/20 sm:p-16">
+            <div className="absolute inset-0 bg-grid-lines opacity-10" />
+            {/* Floating sparkles */}
+            <Sparkles className="absolute right-8 top-8 size-6 text-primary-foreground/30 animate-float-slow" />
+            <InfinityIcon className="absolute bottom-8 left-10 size-6 text-primary-foreground/20 animate-float" />
+
+            <div className="relative">
+              <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
+                Stop chasing payments.
+                <br />
+                Start getting paid.
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-primary-foreground/80">
+                Join the freelancers who replaced their bloated billing software
+                with something that just works.
+              </p>
+              <Link
+                href={session ? "/dashboard" : "/signup"}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "group mt-8 h-12 rounded-xl bg-background px-8 text-[0.95rem] text-foreground hover:bg-background/90",
+                )}
+              >
+                {session ? "Open dashboard" : "Get started — free"}
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <SiteFooter />
