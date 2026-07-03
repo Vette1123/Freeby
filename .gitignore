@@ -24,6 +24,18 @@
 .DS_Store
 *.pem
 
+# OS files
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# IDE / editors
+.idea/
+*.swp
+*.swo
+*~
+
 # debug
 npm-debug.log*
 yarn-debug.log*

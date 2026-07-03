@@ -1,0 +1,24 @@
+# Build artifacts
+.next/
+out/
+build/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Generated
+*.tsbuildinfo
+next-env.d.ts
+
+# Lockfile (keep history clean — don't reformat it)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Data / config
+.env*
+!.env.example
+
+# Docs / misc
+CHANGELOG.md

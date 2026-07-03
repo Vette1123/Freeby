@@ -1,18 +1,13 @@
 # pnpm 11+ settings. See https://pnpm.io/settings
+
 # Allow native build scripts for these transitive dependencies.
 onlyBuiltDependencies:
   - sharp
   - esbuild
   - unrs-resolver
+
 # Never build these (used by transitive deps we don't need).
 ignoredBuiltDependencies:
   - better-sqlite3
   - "@prisma/client"
   - msw
-allowBuilds:
-  '@prisma/client': set this to true or false
-  better-sqlite3: set this to true or false
-  esbuild: set this to true or false
-  msw: set this to true or false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false

@@ -2,11 +2,40 @@
   "name": "freeby",
   "version": "0.1.0",
   "private": true,
+  "description": "Clean invoicing & time tracking for freelancers. Track time → bill it → get paid. One unbroken flow, zero bloat.",
+  "license": "MIT",
+  "author": "Mohamed Gado",
+  "homepage": "https://github.com/Vette1123/freeby",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vette1123/freeby.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vette1123/freeby/issues"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "invoicing",
+    "time-tracking",
+    "freelance",
+    "saas",
+    "better-auth",
+    "drizzle",
+    "tailwindcss",
+    "lemon-squeezy"
+  ],
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",

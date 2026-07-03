@@ -1,0 +1,59 @@
+name: 🐛 Bug report
+description: Report something that's broken
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the details
+        below so we can reproduce and fix it.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected to happen.
+      placeholder: "When I click 'Send invoice', the spinner spins forever. I expected it to send the email and show a success toast."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: The exact steps to trigger the bug.
+      placeholder: |
+        1. Go to /invoices/new
+        2. Add a line item
+        3. Click 'Send'
+        4. ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did this happen?
+      options:
+        - Local dev (self-hosted)
+        - Production deployment
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / OS
+      placeholder: "Chrome 125 on macOS 14 / Node 24 / etc."
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Console output, error messages, or screenshots. Paste anything relevant.
+      render: shell
+    validations:
+      required: false
