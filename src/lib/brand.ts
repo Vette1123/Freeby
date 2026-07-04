@@ -2,8 +2,8 @@
  * Single source of truth for the Freeby brand mark.
  *
  * Freeby is a clean, fast invoicing + time-tracking tool for freelancers. The
- * mark is an indigo "receipt-check" badge: a rounded square with a stylised
- * receipt and a checkmark, conveying "invoicing done." It is rendered
+ * mark is an indigo rounded-square badge with a white "f" monogram and a
+ * white check badge at its foot, conveying "invoicing done." It is rendered
  * statically as `app/icon.svg` and reused by the generated `apple-icon` and
  * Open Graph routes via `svgToDataUri`.
  */
@@ -53,8 +53,9 @@ export function brandBadgeSvg({
   </defs>
   <rect width="512" height="512" rx="${radius}" fill="url(#fb-bg)"/>
   <rect width="512" height="512" rx="${radius}" fill="url(#fb-sheen)"/>
-  <path d="M212 128 L340 128 L340 180 L262 180 L262 234 L320 234 L320 286 L262 286 L262 402 L212 402 Z" fill="#ffffff"/>
-  <path d="M288 340 l-26 -26 a12 12 0 0 1 17 -17 l17 17 l40 -40 a12 12 0 0 1 17 17 z" fill="${BRAND.indigo}"/>
+  <path d="M212 128 L340 128 L340 180 L262 180 L262 234 L320 234 L320 286 L262 286 L262 402 L212 402 Z" fill="${BRAND.check}"/>
+  <circle cx="360" cy="352" r="70" fill="${BRAND.check}"/>
+  <path d="M330 354 l20 22 l44 -52" fill="none" stroke="${BRAND.indigo}" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 }
 

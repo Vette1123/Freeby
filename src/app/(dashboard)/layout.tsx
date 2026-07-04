@@ -19,17 +19,17 @@ export default async function DashboardLayout({
     <div className="min-h-svh">
       <header className="glass-strong sticky top-0 z-40 border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-          <div className="flex items-center gap-6">
+          <div className="flex min-w-0 items-center gap-6">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 font-heading font-semibold"
+              className="flex shrink-0 items-center gap-2 font-heading font-semibold"
             >
               <BrandMark size={32} />
               <span className="hidden sm:inline">Freeby</span>
             </Link>
             <DashboardNav />
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <PlanBadge plan={entitlement.plan} />
             <span className="hidden text-sm text-muted-foreground lg:inline">
               {session.user.email}

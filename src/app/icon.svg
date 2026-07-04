@@ -13,13 +13,13 @@
   <rect width="512" height="512" rx="112" fill="url(#fb-bg)"/>
   <rect width="512" height="512" rx="112" fill="url(#fb-sheen)"/>
 
-  <!-- A bold "f" formed from a stopwatch/invoice hybrid:
-       vertical stem + top arm + check tick at the foot.
-       Reads as "f" at a glance and as "done/paid" via the tick. -->
+  <!-- Bold white "f" monogram: vertical stem + top arm + mid arm. -->
   <path d="M212 128 L340 128 L340 180 L262 180 L262 234 L320 234 L320 286 L262 286 L262 402 L212 402 Z"
         fill="#ffffff"/>
 
-  <!-- Indigo check-tick inside the counter, signalling "paid / done" -->
-  <path d="M288 340 l-26 -26 a12 12 0 0 1 17 -17 l17 17 l40 -40 a12 12 0 0 1 17 17 z"
-        fill="#4f46e5"/>
+  <!-- White "paid / done" badge at the foot with an indigo check inside.
+       High contrast against the indigo field so it reads at every size. -->
+  <circle cx="360" cy="352" r="70" fill="#ffffff"/>
+  <path d="M330 354 l20 22 l44 -52" fill="none" stroke="#4f46e5"
+        stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

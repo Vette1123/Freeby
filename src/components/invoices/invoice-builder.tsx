@@ -146,7 +146,10 @@ export function InvoiceBuilder({ clients }: { clients: ClientOption[] }) {
 
           <div className="space-y-3">
             {items.map((item, idx) => (
-              <div key={item.id} className="grid gap-2 sm:grid-cols-[1fr_80px_120px_120px_36px] sm:items-center">
+              <div
+                key={item.id}
+                className="grid gap-2 rounded-lg border border-border/60 bg-background/40 p-3 sm:grid-cols-[1fr_80px_120px_120px_36px] sm:items-center sm:gap-2 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0"
+              >
                 <Input
                   placeholder={`Item ${idx + 1} description`}
                   value={item.description}
@@ -154,40 +157,47 @@ export function InvoiceBuilder({ clients }: { clients: ClientOption[] }) {
                     updateItem(item.id, { description: e.target.value })
                   }
                 />
-                <Input
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="Qty"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    updateItem(item.id, { quantity: e.target.value })
-                  }
-                />
-                <Input
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="Unit price"
-                  value={item.unitPrice}
-                  onChange={(e) =>
-                    updateItem(item.id, { unitPrice: e.target.value })
-                  }
-                />
-                <div className="px-2 py-1.5 text-right text-sm font-medium tabular-nums text-muted-foreground">
-                  {formatMoney(
-                    (
-                      Number(item.quantity || 0) * Number(item.unitPrice || 0)
-                    ).toFixed(2),
-                  )}
+                {/* Qty + unit price sit side by side on mobile, then dissolve
+                    into the parent grid at sm+ via `contents`. */}
+                <div className="grid grid-cols-2 gap-2 sm:contents">
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="Qty"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateItem(item.id, { quantity: e.target.value })
+                    }
+                  />
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="Unit price"
+                    value={item.unitPrice}
+                    onChange={(e) =>
+                      updateItem(item.id, { unitPrice: e.target.value })
+                    }
+                  />
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => removeItem(item.id)}
-                  disabled={items.length === 1}
-                  aria-label="Remove line"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
+                {/* Amount + remove share one row on mobile, dissolve at sm+. */}
+                <div className="flex items-center justify-between gap-2 sm:contents">
+                  <div className="px-2 py-1.5 text-right text-sm font-medium tabular-nums text-muted-foreground">
+                    {formatMoney(
+                      (
+                        Number(item.quantity || 0) * Number(item.unitPrice || 0)
+                      ).toFixed(2),
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => removeItem(item.id)}
+                    disabled={items.length === 1}
+                    aria-label="Remove line"
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

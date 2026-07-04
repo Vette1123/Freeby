@@ -50,15 +50,20 @@ export function BrandMark({
         </defs>
         <rect width="512" height="512" rx="112" fill="url(#fb-mark-bg)" />
         <rect width="512" height="512" rx="112" fill="url(#fb-mark-sheen)" />
-        {/* "f" stem + top arm */}
+        {/* "f" monogram: stem + top arm + mid arm */}
         <path
           d="M212 128 L340 128 L340 180 L262 180 L262 234 L320 234 L320 286 L262 286 L262 402 L212 402 Z"
           fill="#ffffff"
         />
-        {/* check tick at the foot */}
+        {/* White "paid / done" badge with an indigo check — high contrast at any size */}
+        <circle cx="360" cy="352" r="70" fill="#ffffff" />
         <path
-          d="M288 340 l-26 -26 a12 12 0 0 1 17 -17 l17 17 l40 -40 a12 12 0 0 1 17 17 z"
-          fill="#4f46e5"
+          d="M330 354 l20 22 l44 -52"
+          fill="none"
+          stroke="#4f46e5"
+          strokeWidth="30"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </span>

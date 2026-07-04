@@ -146,6 +146,15 @@ export async function updateInvoiceStatus(
   return ok(undefined);
 }
 
+/**
+ * Thin wrapper so a callable server action can be passed to a Client Component.
+ * (An inline `(id) => updateInvoiceStatus(id, "paid")` closure is NOT a server
+ * action and throws "Functions cannot be passed directly to Client Components".)
+ */
+export async function markInvoicePaid(id: string): Promise<ActionResult> {
+  return updateInvoiceStatus(id, "paid");
+}
+
 export async function deleteInvoice(id: string): Promise<ActionResult> {
   const { userId } = await requireUser();
   await db

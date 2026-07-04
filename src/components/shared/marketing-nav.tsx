@@ -55,17 +55,20 @@ export function MarketingNav({ isAuthenticated }: { isAuthenticated: boolean }) 
         return;
       }
 
-      // Pick the last section whose top is at or above the activation line.
-      // This is stable: for a given scroll position there's exactly one
-      // answer, so it can't flicker. If we're above the first section,
-      // nothing is active.
+      // The active section is the LOWEST one whose top has crossed the
+      // activation line — i.e. the greatest document-top that is still at or
+      // above the line. Computed by position, not array order, so it stays
+      // correct no matter how the sections are ordered and can't flicker.
+      // If we're above the first section, nothing is active.
+      const line = y + ACTIVATION_OFFSET;
       let current: string | null = null;
+      let bestTop = -Infinity;
       for (const id of SPY_IDS) {
         const el = document.getElementById(id);
         if (!el) continue;
-        // top relative to the document, minus the activation offset.
-        // When this is <= 0, the section's top has crossed the line.
-        if (el.getBoundingClientRect().top + y - ACTIVATION_OFFSET <= y) {
+        const top = el.getBoundingClientRect().top + y;
+        if (top <= line && top > bestTop) {
+          bestTop = top;
           current = id;
         }
       }

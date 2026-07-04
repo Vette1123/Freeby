@@ -218,7 +218,7 @@ export default async function Home() {
 
       {/* Stats band */}
       <Reveal as="section" className="border-y border-border/40 bg-card/30 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-3 gap-4 px-6 py-10">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-6 px-6 py-10 sm:grid-cols-3 sm:gap-4">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-heading text-3xl font-bold sm:text-4xl">
@@ -305,6 +305,11 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Pricing preview */}
+      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-24 px-6 pb-24">
+        <PricingPreview isAuthenticated={!!session} />
+      </section>
+
       {/* FAQ */}
       <section id="faq" className="mx-auto w-full max-w-3xl scroll-mt-24 px-6 pb-24">
         <Reveal as="div" className="mb-10 text-center">
@@ -333,11 +338,6 @@ export default async function Home() {
             </StaggerItem>
           ))}
         </Stagger>
-      </section>
-
-      {/* Pricing preview */}
-      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-24 px-6 pb-24">
-        <PricingPreview isAuthenticated={!!session} />
       </section>
 
       {/* CTA */}
