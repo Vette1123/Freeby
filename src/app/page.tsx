@@ -305,6 +305,11 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Pricing preview */}
+      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-24 px-6 pb-24">
+        <PricingPreview isAuthenticated={!!session} />
+      </section>
+
       {/* FAQ */}
       <section id="faq" className="mx-auto w-full max-w-3xl scroll-mt-24 px-6 pb-24">
         <Reveal as="div" className="mb-10 text-center">
@@ -333,11 +338,6 @@ export default async function Home() {
             </StaggerItem>
           ))}
         </Stagger>
-      </section>
-
-      {/* Pricing preview */}
-      <section id="pricing" className="mx-auto w-full max-w-5xl scroll-mt-24 px-6 pb-24">
-        <PricingPreview isAuthenticated={!!session} />
       </section>
 
       {/* CTA */}

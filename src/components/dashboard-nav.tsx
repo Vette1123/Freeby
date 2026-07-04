@@ -17,7 +17,7 @@ const links = [
 export function DashboardNav() {
   const pathname = usePathname();
   return (
-    <nav className="flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {links.map((l) => {
         const active = l.exact
           ? pathname === l.href
