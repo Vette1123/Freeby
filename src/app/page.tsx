@@ -218,7 +218,7 @@ export default async function Home() {
 
       {/* Stats band */}
       <Reveal as="section" className="border-y border-border/40 bg-card/30 backdrop-blur">
-        <div className="mx-auto grid w-full max-w-4xl grid-cols-3 gap-4 px-6 py-10">
+        <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-6 px-6 py-10 sm:grid-cols-3 sm:gap-4">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <p className="font-heading text-3xl font-bold sm:text-4xl">

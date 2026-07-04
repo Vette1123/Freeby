@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Download } from "lucide-react";
-import { getInvoice, updateInvoiceStatus, deleteInvoice } from "../actions";
+import { getInvoice, markInvoicePaid, deleteInvoice } from "../actions";
 import { sendInvoice } from "../send";
 import { formatMoney } from "@/lib/money";
 import { formatDate } from "@/lib/format";
@@ -55,7 +55,7 @@ export default async function InvoiceDetailPage({
             clientEmail={inv.client.email ?? null}
             actions={{
               send: sendInvoice,
-              markPaid: (id) => updateInvoiceStatus(id, "paid"),
+              markPaid: markInvoicePaid,
               remove: deleteInvoice,
             }}
           />
