@@ -15,14 +15,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+export interface ClientRow {
+  id: string;
+  name: string;
+  email: string | null;
+  company: string | null;
+}
+
 export function ClientForm({
   clientId,
   defaultValues,
   onDone,
+  onCreated,
+  onUpdated,
 }: {
   clientId?: string;
   defaultValues?: Partial<ClientInput>;
   onDone?: () => void;
+  /** Fired with the optimistic row right after a successful create. */
+  onCreated?: (row: ClientRow) => void;
+  /** Fired with id + patch right after a successful update. */
+  onUpdated?: (id: string, patch: Partial<ClientRow>) => void;
 }) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -46,9 +59,30 @@ export function ClientForm({
 
   async function onSubmit(values: ClientInput) {
     setServerError(null);
-    const res = clientId
-      ? await updateClient(clientId, values)
-      : await createClient(values);
+    if (clientId) {
+      const res = await updateClient(clientId, values);
+      if (!res.ok) {
+        if (res.fieldErrors) {
+          for (const [field, msg] of Object.entries(res.fieldErrors)) {
+            setError(field as keyof ClientInput, { message: msg });
+          }
+        }
+        setServerError(res.error);
+        toast.error(res.error);
+        return;
+      }
+      toast.success("Client updated.");
+      onUpdated?.(clientId, {
+        name: values.name,
+        email: values.email || null,
+        company: values.company || null,
+      });
+      onDone?.();
+      router.refresh();
+      return;
+    }
+
+    const res = await createClient(values);
     if (!res.ok) {
       if (res.fieldErrors) {
         for (const [field, msg] of Object.entries(res.fieldErrors)) {
@@ -59,7 +93,13 @@ export function ClientForm({
       toast.error(res.error);
       return;
     }
-    toast.success(clientId ? "Client updated." : "Client added.");
+    toast.success("Client added.");
+    onCreated?.({
+      id: res.data.id,
+      name: values.name,
+      email: values.email || null,
+      company: values.company || null,
+    });
     onDone?.();
     router.refresh();
   }

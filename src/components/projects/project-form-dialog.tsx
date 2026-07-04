@@ -17,12 +17,23 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Modal, ModalTitle, ModalDescription } from "@/components/ui/dialog";
 
+export interface CreatedProject {
+  id: string;
+  name: string;
+  clientId: string;
+  hourlyRate: string;
+  status: "active" | "archived";
+  clientName?: string;
+}
+
 export function ProjectFormDialog({
   clients,
   triggerLabel = "New project",
+  onCreated,
 }: {
   clients: SelectOption[];
   triggerLabel?: string;
+  onCreated?: (project: CreatedProject) => void;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -61,6 +72,16 @@ export function ProjectFormDialog({
       return;
     }
     toast.success("Project created.");
+    if (res.ok) {
+      onCreated?.({
+        id: res.data.id,
+        name: values.name,
+        clientId: values.clientId,
+        hourlyRate: values.hourlyRate,
+        status: "active",
+        clientName: clients.find((c) => c.value === values.clientId)?.label,
+      });
+    }
     setOpen(false);
     router.refresh();
   }

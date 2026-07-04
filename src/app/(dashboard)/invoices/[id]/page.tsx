@@ -6,8 +6,7 @@ import { sendInvoice } from "../send";
 import { formatMoney } from "@/lib/money";
 import { formatDate } from "@/lib/format";
 import { PageHeader } from "@/components/shared/page-header";
-import { Badge } from "@/components/ui/badge";
-import { InvoiceActions } from "@/components/invoices/invoice-actions";
+import { InvoiceStatusHeader } from "@/components/invoices/invoice-status-header";
 
 export default async function InvoiceDetailPage({
   params,
@@ -30,28 +29,10 @@ export default async function InvoiceDetailPage({
 
       <PageHeader
         title={
-          <span className="flex items-center gap-3">
-            {inv.number}
-            <Badge
-              variant={
-                inv.status === "paid"
-                  ? "success"
-                  : inv.status === "overdue"
-                    ? "danger"
-                    : inv.status === "sent"
-                      ? "warning"
-                      : "muted"
-              }
-            >
-              {inv.status}
-            </Badge>
-          </span>
-        }
-        description={`${inv.client.name} · issued ${formatDate(inv.issueDate)}`}
-        actions={
-          <InvoiceActions
+          <InvoiceStatusHeader
+            number={inv.number}
             invoiceId={inv.id}
-            status={inv.status}
+            status={inv.status as "draft" | "sent" | "paid" | "overdue"}
             clientEmail={inv.client.email ?? null}
             actions={{
               send: sendInvoice,
@@ -60,6 +41,7 @@ export default async function InvoiceDetailPage({
             }}
           />
         }
+        description={`${inv.client.name} · issued ${formatDate(inv.issueDate)}`}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">

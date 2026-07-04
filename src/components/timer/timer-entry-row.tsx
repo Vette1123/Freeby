@@ -1,9 +1,8 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Clock, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteTimeEntry } from "@/app/(dashboard)/timer/actions";
+import { useAsyncAction } from "@/hooks/use-async-action";
 import { Button } from "@/components/ui/button";
 
 export function TimerEntryRow({
@@ -14,6 +13,7 @@ export function TimerEntryRow({
   date,
   duration,
   earned,
+  onDeleted,
 }: {
   id: string;
   projectName: string;
@@ -22,17 +22,16 @@ export function TimerEntryRow({
   date: string;
   duration: string;
   earned: string | null;
+  onDeleted?: (id: string) => void;
 }) {
-  const router = useRouter();
-  const [deleting, setDeleting] = useState(false);
+  const { run, isPending } = useAsyncAction({
+    successMessage: "Entry deleted.",
+    onOptimistic: () => onDeleted?.(id),
+    onError: (e) => toast.error(e),
+  });
 
   async function handleDelete() {
-    setDeleting(true);
-    const res = await deleteTimeEntry(id);
-    setDeleting(false);
-    if (!res.ok) return toast.error(res.error);
-    toast.success("Entry deleted.");
-    router.refresh();
+    await run(() => deleteTimeEntry(id));
   }
 
   return (
@@ -61,10 +60,10 @@ export function TimerEntryRow({
           size="icon-sm"
           className="opacity-0 transition-opacity group-hover:opacity-100"
           onClick={handleDelete}
-          disabled={deleting}
+          disabled={isPending}
           aria-label="Delete entry"
         >
-          {deleting ? (
+          {isPending ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
             <Trash2 className="size-4" />
