@@ -22,12 +22,24 @@ interface ActiveTimerState {
   startedAt: number; // epoch ms
 }
 
+export interface OptimisticEntry {
+  id: string;
+  projectName: string;
+  clientName?: string;
+  description: string;
+  date: string;
+  duration: string;
+  earned: string | null;
+}
+
 export function TimerClock({
   projects,
   hasProjects,
+  onEntrySaved,
 }: {
   projects: SelectOption[];
   hasProjects: boolean;
+  onEntrySaved?: (entry: OptimisticEntry) => void;
 }) {
   const router = useRouter();
 
@@ -105,6 +117,21 @@ export function TimerClock({
       return;
     }
     toast.success("Time entry saved.");
+    // Optimistically surface the new entry at the top of the list.
+    if (res.ok) {
+      const ended = new Date();
+      const durationMs = ended.getTime() - active.startedAt;
+      const projectName =
+        projects.find((p) => p.value === active.projectId)?.label ?? "—";
+      onEntrySaved?.({
+        id: res.data.id,
+        projectName,
+        description: active.description,
+        date: ended.toLocaleDateString(),
+        duration: formatDuration(durationMs),
+        earned: null,
+      });
+    }
     setActive(null);
     setDescription("");
     localStorage.removeItem(STORAGE_KEY);

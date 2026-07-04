@@ -6,6 +6,7 @@ import { DashboardNav } from "@/components/dashboard-nav";
 import { getEntitlement } from "@/lib/subscription";
 import { PlanBadge } from "@/components/shared/plan-badge";
 import { BrandMark } from "@/components/brand/brand-mark";
+import { NavigationProgress } from "@/components/shared/navigation-progress";
 
 export default async function DashboardLayout({
   children,
@@ -17,6 +18,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-svh">
+      <NavigationProgress />
       <header className="glass-strong sticky top-0 z-40 border-b border-border/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex min-w-0 items-center gap-6">

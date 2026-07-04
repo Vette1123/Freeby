@@ -3,12 +3,14 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal, ModalTitle, ModalDescription } from "@/components/ui/dialog";
-import { ClientForm } from "@/components/clients/client-form";
+import { ClientForm, type ClientRow } from "@/components/clients/client-form";
 
 export function ClientFormDialog({
   triggerLabel = "New client",
+  onCreated,
 }: {
   triggerLabel?: string;
+  onCreated?: (row: ClientRow) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -24,7 +26,10 @@ export function ClientFormDialog({
           Add a client you bill. You can edit details later.
         </ModalDescription>
         <div className="mt-5">
-          <ClientForm onDone={() => setOpen(false)} />
+          <ClientForm
+            onCreated={onCreated}
+            onDone={() => setOpen(false)}
+          />
         </div>
       </Modal>
     </>

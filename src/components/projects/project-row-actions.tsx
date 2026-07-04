@@ -9,6 +9,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAsyncAction } from "@/hooks/use-async-action";
+import type { ActionResult } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,44 +28,55 @@ type Actions = {
   toggleStatus: (
     id: string,
     status: "active" | "archived",
-  ) => Promise<{ ok: boolean; error?: string }>;
-  remove: (id: string) => Promise<{ ok: boolean; error?: string }>;
+  ) => Promise<ActionResult>;
+  remove: (id: string) => Promise<ActionResult>;
 };
 
 export function ProjectRowActions({
   projectId,
   status,
   actions,
+  onToggled,
+  onDeleted,
 }: {
   projectId: string;
   status: "active" | "archived";
   actions: Actions;
+  onToggled?: (id: string, next: "active" | "archived") => void;
+  onDeleted?: (id: string) => void;
 }) {
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const { run: runToggle, isPending: toggling } = useAsyncAction({
+    onError: (e) => toast.error(e ?? "Failed"),
+  });
+  const { run: runDelete, isPending: deleting } = useAsyncAction({
+    onError: (e) => toast.error(e ?? "Failed"),
+  });
 
   async function toggle() {
-    setBusy(true);
     const next = status === "active" ? "archived" : "active";
-    const res = await actions.toggleStatus(projectId, next);
-    setBusy(false);
-    if (!res.ok) return toast.error(res.error ?? "Failed");
-    toast.success(
-      next === "archived" ? "Project archived." : "Project restored.",
-    );
+    const res = await runToggle(() => actions.toggleStatus(projectId, next), {
+      onOptimistic: () => onToggled?.(projectId, next),
+    });
+    if (res.ok) {
+      toast.success(
+        next === "archived" ? "Project archived." : "Project restored.",
+      );
+    }
     router.refresh();
   }
 
   async function handleDelete() {
-    setBusy(true);
-    const res = await actions.remove(projectId);
-    setBusy(false);
+    const res = await runDelete(() => actions.remove(projectId), {
+      onOptimistic: () => onDeleted?.(projectId),
+    });
+    if (res.ok) toast.success("Project deleted.");
     setDeleteOpen(false);
-    if (!res.ok) return toast.error(res.error ?? "Failed");
-    toast.success("Project deleted.");
     router.refresh();
   }
+
+  const busy = toggling || deleting;
 
   return (
     <>

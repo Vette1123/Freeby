@@ -2,9 +2,8 @@
 import { useState } from "react";
 import { MoreHorizontal, Pencil, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  deleteClient,
-} from "@/app/(dashboard)/clients/actions";
+import { deleteClient } from "@/app/(dashboard)/clients/actions";
+import { useAsyncAction } from "@/hooks/use-async-action";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,7 +16,7 @@ import {
   ModalTitle,
   ModalDescription,
 } from "@/components/ui/dialog";
-import { ClientForm } from "@/components/clients/client-form";
+import { ClientForm, type ClientRow } from "@/components/clients/client-form";
 
 type ClientSummary = {
   id: string;
@@ -28,21 +27,26 @@ type ClientSummary = {
   notes: string;
 };
 
-export function ClientRowActions({ client }: { client: ClientSummary }) {
+export function ClientRowActions({
+  client,
+  onDeleted,
+  onUpdated,
+}: {
+  client: ClientSummary;
+  onDeleted?: (id: string) => void;
+  onUpdated?: (id: string, patch: Partial<ClientRow>) => void;
+}) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const { run, isPending } = useAsyncAction({
+    successMessage: "Client deleted.",
+    onOptimistic: () => onDeleted?.(client.id),
+    onError: (e) => toast.error(e),
+  });
 
   async function handleDelete() {
-    setDeleting(true);
-    const res = await deleteClient(client.id);
-    setDeleting(false);
+    await run(() => deleteClient(client.id));
     setDeleteOpen(false);
-    if (!res.ok) {
-      toast.error(res.error);
-      return;
-    }
-    toast.success("Client deleted.");
   }
 
   return (
@@ -81,6 +85,7 @@ export function ClientRowActions({ client }: { client: ClientSummary }) {
           <ClientForm
             clientId={client.id}
             defaultValues={client}
+            onUpdated={onUpdated}
             onDone={() => setEditOpen(false)}
           />
         </div>
@@ -96,16 +101,16 @@ export function ClientRowActions({ client }: { client: ClientSummary }) {
           <Button
             variant="ghost"
             onClick={() => setDeleteOpen(false)}
-            disabled={deleting}
+            disabled={isPending}
           >
             Cancel
           </Button>
           <Button
             variant="destructive"
             onClick={handleDelete}
-            disabled={deleting}
+            disabled={isPending}
           >
-            {deleting && <Loader2 className="size-4 animate-spin" />}
+            {isPending && <Loader2 className="size-4 animate-spin" />}
             Delete
           </Button>
         </div>

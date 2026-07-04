@@ -1,6 +1,10 @@
 import { cn } from "@/lib/utils";
 
-/** A single shimmer skeleton block. */
+/**
+ * A shimmer skeleton block. Uses an animated gradient sweep (not the flat
+ * opacity pulse) so loading states read as "working on it" rather than a
+ * static placeholder. Falls back to plain bg under reduced-motion.
+ */
 export function Skeleton({
   className,
   ...props
@@ -8,7 +12,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded-md bg-muted",
+        "rounded-md bg-muted bg-[length:200%_100%] animate-[shimmer_1.6s_ease-in-out_infinite] [background-image:linear-gradient(90deg,transparent,color-mix(in_oklch,var(--foreground)_8%,transparent),transparent)] motion-reduce:animate-none motion-reduce:bg-muted",
         className,
       )}
       {...props}
@@ -52,6 +56,30 @@ export function ListSkeleton({ rows = 4 }: { rows?: number }) {
           </div>
           <Skeleton className="h-4 w-12" />
         </div>
+      ))}
+    </div>
+  );
+}
+
+/** Table skeleton that mirrors the clients/invoices table layout. */
+export function TableSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="overflow-hidden rounded-xl ring-1 ring-foreground/10">
+      <div className="space-y-px">
+        {Array.from({ length: rows }).map((_, i) => (
+          <Skeleton key={i} className="h-12 w-full rounded-none" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Card-grid skeleton mirroring the projects page. */
+export function CardGridSkeleton({ count = 6 }: { count?: number }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <Skeleton key={i} className="h-40 w-full rounded-xl" />
       ))}
     </div>
   );
