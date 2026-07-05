@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { MoreHorizontal, Pencil, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteClient } from "@/app/(dashboard)/clients/actions";
@@ -36,12 +37,15 @@ export function ClientRowActions({
   onDeleted?: (id: string) => void;
   onUpdated?: (id: string, patch: Partial<ClientRow>) => void;
 }) {
+  const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const { run, isPending } = useAsyncAction({
     successMessage: "Client deleted.",
     onOptimistic: () => onDeleted?.(client.id),
-    onError: (e) => toast.error(e),
+    refresh: () => router.refresh(),
+    onError: (e) =>
+      toast.error(e, { action: { label: "Retry", onClick: handleDelete } }),
   });
 
   async function handleDelete() {
@@ -58,6 +62,7 @@ export function ClientRowActions({
               variant="ghost"
               size="icon-sm"
               aria-label="Actions"
+              aria-busy={isPending}
             />
           }
         >

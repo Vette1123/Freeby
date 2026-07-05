@@ -48,10 +48,15 @@ export function ProjectRowActions({
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const { run: runToggle, isPending: toggling } = useAsyncAction({
+    refresh: () => router.refresh(),
     onError: (e) => toast.error(e ?? "Failed"),
   });
   const { run: runDelete, isPending: deleting } = useAsyncAction({
-    onError: (e) => toast.error(e ?? "Failed"),
+    refresh: () => router.refresh(),
+    onError: (e) =>
+      toast.error(e ?? "Failed", {
+        action: { label: "Retry", onClick: handleDelete },
+      }),
   });
 
   async function toggle() {
@@ -64,7 +69,6 @@ export function ProjectRowActions({
         next === "archived" ? "Project archived." : "Project restored.",
       );
     }
-    router.refresh();
   }
 
   async function handleDelete() {
@@ -73,7 +77,6 @@ export function ProjectRowActions({
     });
     if (res.ok) toast.success("Project deleted.");
     setDeleteOpen(false);
-    router.refresh();
   }
 
   const busy = toggling || deleting;

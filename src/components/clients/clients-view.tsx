@@ -2,9 +2,11 @@
 // Client list with optimistic add / edit / delete. Holds the rows in
 // useOptimistic so a create/delete reflects instantly; the server action's
 // revalidatePath then reconciles the truth on the next render.
+import { useState } from "react";
 import Link from "next/link";
 import { Mail, Building2, Users } from "lucide-react";
 import { useOptimisticList } from "@/hooks/use-optimistic-list";
+import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
 import { formatMoney } from "@/lib/money";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -26,6 +28,22 @@ export function ClientsView({
   isFreePlan: boolean;
 }) {
   const { items, updateOptimistic } = useOptimisticList(clients);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // "N" opens the new-client dialog (ignored while typing in inputs).
+  useKeyboardShortcut("n", () => setDialogOpen(true));
+
+  const newClientDialog = (
+    <ClientFormDialog
+      open={dialogOpen}
+      onOpenChange={setDialogOpen}
+      onCreated={(row) =>
+        updateOptimistic({
+          op: "add",
+          data: { ...row, invoiceCount: 0, outstandingTotal: "0" },
+        })
+      }
+    />
+  );
 
   return (
     <div className="space-y-6">
@@ -33,14 +51,14 @@ export function ClientsView({
         title="Clients"
         description="Everyone you bill — track outstanding balances at a glance."
         actions={
-          <ClientFormDialog
-            onCreated={(row) =>
-              updateOptimistic({
-                op: "add",
-                data: { ...row, invoiceCount: 0, outstandingTotal: "0" },
-              })
-            }
-          />
+          <span className="flex items-center gap-2">
+            {items.length > 0 && (
+              <kbd className="hidden rounded border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline">
+                N
+              </kbd>
+            )}
+            {newClientDialog}
+          </span>
         }
       />
 

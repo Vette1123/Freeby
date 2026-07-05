@@ -7,13 +7,19 @@
 // CRITICAL: any useOptimistic update tied to this action MUST run inside the
 // same transition — that's what the `onOptimistic` callback is for. React only
 // surfaces the optimistic value while the transition is pending, and the
-// server action's revalidatePath (+ router.refresh below) delivers fresh props
-// before the transition ends, so the change sticks.
+// server action's revalidatePath (+ refresh below) delivers fresh props before
+// the transition ends, so the change sticks.
+//
+// REVERT-ON-ERROR: on failure we deliberately call `refresh()` again so the
+// server's true state flows back down and overrides the optimistic update.
+// Without this, a failed delete would leave the row missing until the user
+// navigated away and back.
 //
 // Usage:
 //   const { run, isPending } = useAsyncAction({
 //     onOptimistic: () => updateOptimistic({ op: "delete", id }),
-//     onSuccess: () => toast.success("Deleted."),
+//     refresh: () => router.refresh(),
+//     successMessage: "Deleted.",
 //   });
 //   run(() => deleteClient(id));
 import { useTransition } from "react";
@@ -30,8 +36,17 @@ export interface UseAsyncActionOptions {
   onError?: (error: string) => void;
   /** Default success message if the action carries no payload. */
   successMessage?: string;
-  /** Call after success to reconcile fresh server data. */
+  /**
+   * Reconcile fresh server data. Called BOTH on success (to commit) AND on
+   * error (to revert the optimistic update back to server truth).
+   */
   refresh?: () => void;
+  /**
+   * Optional undo for destructive actions. Renders as a toast action button
+   * when the action succeeds. Pair with optimistic add to restore a deleted
+   * row client-side without a server round-trip.
+   */
+  undo?: () => void;
 }
 
 /** Per-call overrides (onOptimistic for this specific invocation). */
@@ -62,10 +77,12 @@ export function useAsyncAction(options: UseAsyncActionOptions = {}) {
         }
         if (res.ok) {
           options.onSuccess?.(options.successMessage);
-          options.refresh?.();
         } else {
           options.onError?.(res.error);
         }
+        // Always reconcile: on success it commits the change, on error it
+        // reverts the optimistic update by pulling server truth back down.
+        options.refresh?.();
         resolve(res);
       });
     });

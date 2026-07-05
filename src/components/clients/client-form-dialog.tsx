@@ -8,11 +8,18 @@ import { ClientForm, type ClientRow } from "@/components/clients/client-form";
 export function ClientFormDialog({
   triggerLabel = "New client",
   onCreated,
+  open,
+  onOpenChange,
 }: {
   triggerLabel?: string;
   onCreated?: (row: ClientRow) => void;
+  /** Controlled open state. If omitted, the dialog manages its own state. */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = open ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   return (
     <>
@@ -20,7 +27,7 @@ export function ClientFormDialog({
         <Plus className="size-4" />
         {triggerLabel}
       </Button>
-      <Modal open={open} onOpenChange={setOpen}>
+      <Modal open={isOpen} onOpenChange={setOpen}>
         <ModalTitle>New client</ModalTitle>
         <ModalDescription>
           Add a client you bill. You can edit details later.

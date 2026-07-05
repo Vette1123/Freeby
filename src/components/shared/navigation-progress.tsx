@@ -3,13 +3,17 @@
 // instant feedback when clicking nav links or after a mutation triggers
 // router.push / router.refresh. No external dependency — re-mounts on each
 // pathname change (via key) so the effect only ever schedules timers.
+// Skipped entirely under prefers-reduced-motion.
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 type Phase = "loading" | "finishing";
 
 export function NavigationProgress() {
   const pathname = usePathname();
+  const reduced = usePrefersReducedMotion();
+  if (reduced) return null;
   // keying the inner component on pathname forces a fresh mount per route,
   // which restarts the animation without a setState-in-effect.
   return <Bar key={pathname} />;
