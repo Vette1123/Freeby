@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { Clock, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteTimeEntry } from "@/app/(dashboard)/timer/actions";
@@ -24,10 +25,15 @@ export function TimerEntryRow({
   earned: string | null;
   onDeleted?: (id: string) => void;
 }) {
+  const router = useRouter();
   const { run, isPending } = useAsyncAction({
     successMessage: "Entry deleted.",
     onOptimistic: () => onDeleted?.(id),
-    onError: (e) => toast.error(e),
+    refresh: () => router.refresh(),
+    onError: (e) =>
+      toast.error(e, {
+        action: { label: "Retry", onClick: handleDelete },
+      }),
   });
 
   async function handleDelete() {
@@ -35,7 +41,10 @@ export function TimerEntryRow({
   }
 
   return (
-    <div className="group flex items-center gap-3 rounded-lg bg-card px-3 py-2.5 ring-1 ring-foreground/10">
+    <div
+      className="group flex items-center gap-3 rounded-lg bg-card px-3 py-2.5 ring-1 ring-foreground/10"
+      aria-busy={isPending}
+    >
       <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Clock className="size-4" />
       </div>

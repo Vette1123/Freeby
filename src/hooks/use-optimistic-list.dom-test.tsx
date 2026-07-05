@@ -113,6 +113,34 @@ describe("useAsyncAction", () => {
     expect(errorMsg).toBe("Something went wrong. Please try again.");
   });
 
+  it("calls refresh on BOTH success and error (revert-on-error)", async () => {
+    let refreshCount = 0;
+    const refresh = () => {
+      refreshCount += 1;
+    };
+
+    // Success path.
+    const { result: successHook } = renderHook(() =>
+      useAsyncAction({ refresh, onError: () => {} }),
+    );
+    await act(async () => {
+      await successHook.current.run(async () => ({ ok: true, data: undefined }));
+    });
+    expect(refreshCount).toBe(1);
+
+    // Error path — refresh must ALSO fire to revert the optimistic update.
+    const { result: errorHook } = renderHook(() =>
+      useAsyncAction({ refresh, onError: () => {} }),
+    );
+    await act(async () => {
+      await errorHook.current.run(async () => ({
+        ok: false as const,
+        error: "nope",
+      }));
+    });
+    expect(refreshCount).toBe(2);
+  });
+
   it("resets isPending to false after the action completes", async () => {
     const { result } = renderHook(() =>
       useAsyncAction({ onError: () => {} }),
