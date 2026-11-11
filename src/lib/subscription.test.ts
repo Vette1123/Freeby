@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapLsStatus, LIMITS, showsBranding } from "./subscription-types";
+import { mapLsStatus, LIMITS, showsBranding, deriveEntitlement } from "./subscription-types";
 
 describe("subscription", () => {
   describe("mapLsStatus", () => {
@@ -59,6 +59,46 @@ describe("subscription", () => {
     });
     it("brands again once Pro lapses", () => {
       expect(showsBranding({ plan: "pro", isActive: false })).toBe(true);
+    });
+  });
+
+  describe("deriveEntitlement", () => {
+    const now = new Date("2026-11-11T12:00:00Z");
+    const later = new Date("2026-12-11T12:00:00Z");
+    const earlier = new Date("2026-10-11T12:00:00Z");
+    const row = (status: Parameters<typeof deriveEntitlement>[0]["status"], end: Date | null) => ({
+      plan: "pro",
+      status,
+      cancelAtPeriodEnd: false,
+      currentPeriodEnd: end,
+    });
+
+    it("active Pro gets Pro limits", () => {
+      const e = deriveEntitlement(row("active", later), now);
+      expect(e.plan).toBe("pro");
+      expect(LIMITS[e.plan].maxClients).toBe(Infinity);
+    });
+
+    it("expired Pro falls back to Free limits", () => {
+      const e = deriveEntitlement(row("expired", earlier), now);
+      expect(e.plan).toBe("free");
+      expect(e.isActive).toBe(false);
+      expect(LIMITS[e.plan].maxInvoicesPerMonth).toBe(3);
+    });
+
+    it("cancelled Pro keeps access until the paid period ends", () => {
+      const e = deriveEntitlement(row("canceled", later), now);
+      expect(e.plan).toBe("pro");
+      expect(e.isActive).toBe(true);
+      expect(e.cancelAtPeriodEnd).toBe(true);
+    });
+
+    it("cancelled Pro past its period end is Free", () => {
+      expect(deriveEntitlement(row("canceled", earlier), now).plan).toBe("free");
+    });
+
+    it("paused Pro is Free", () => {
+      expect(deriveEntitlement(row("paused", later), now).plan).toBe("free");
     });
   });
 });

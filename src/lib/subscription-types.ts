@@ -39,6 +39,37 @@ export function showsBranding(e: Pick<Entitlement, "plan" | "isActive">): boolea
 /** Active subscription statuses that grant Pro access. */
 export const ACTIVE_STATUSES: SubscriptionStatus[] = ["active", "on_trial"];
 
+/**
+ * Turn a stored subscription row into what the user gets right now. The
+ * webhook stores plan "pro" for every paid status, including expired, so
+ * `plan` here is the *effective* plan: Pro only while access is live. A
+ * cancelled subscription keeps access until the paid period ends, as Lemon
+ * Squeezy does (it moves to "expired" at ends_at).
+ */
+export function deriveEntitlement(
+  row: {
+    plan: string;
+    status: SubscriptionStatus;
+    cancelAtPeriodEnd: boolean;
+    currentPeriodEnd: Date | null;
+  },
+  now: Date,
+): Entitlement {
+  const inPaidPeriod =
+    row.status === "canceled" &&
+    row.currentPeriodEnd !== null &&
+    row.currentPeriodEnd > now;
+  const isActive =
+    row.plan === "pro" && (ACTIVE_STATUSES.includes(row.status) || inPaidPeriod);
+  return {
+    plan: isActive ? "pro" : "free",
+    status: row.status,
+    isActive,
+    cancelAtPeriodEnd: row.cancelAtPeriodEnd || inPaidPeriod,
+    currentPeriodEnd: row.currentPeriodEnd,
+  };
+}
+
 /** Map a Lemon Squeezy subscription status to our internal status. */
 export function mapLsStatus(
   lsStatus: string,

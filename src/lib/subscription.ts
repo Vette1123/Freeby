@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { subscription } from "@/lib/db/schema";
 import {
-  ACTIVE_STATUSES,
+  deriveEntitlement,
   type Entitlement,
   type Plan,
   type SubscriptionStatus,
@@ -40,14 +40,15 @@ export async function getEntitlement(userId: string): Promise<Entitlement> {
   const row = rows[0];
   if (!row) return FREE_DEFAULT;
 
-  const isActive = ACTIVE_STATUSES.includes(row.status as SubscriptionStatus);
-  return {
-    plan: row.plan === "pro" ? "pro" : "free",
-    status: row.status as SubscriptionStatus,
-    isActive,
-    cancelAtPeriodEnd: row.cancelAtPeriodEnd ?? false,
-    currentPeriodEnd: row.currentPeriodEnd
-      ? new Date(row.currentPeriodEnd)
-      : null,
-  };
+  return deriveEntitlement(
+    {
+      plan: row.plan,
+      status: row.status as SubscriptionStatus,
+      cancelAtPeriodEnd: row.cancelAtPeriodEnd ?? false,
+      currentPeriodEnd: row.currentPeriodEnd
+        ? new Date(row.currentPeriodEnd)
+        : null,
+    },
+    new Date(),
+  );
 }
