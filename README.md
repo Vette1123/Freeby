@@ -4,10 +4,8 @@
 
 ### Invoicing & time tracking that gets out of your way.
 
-The freelancer's toolkit built around **one unbroken flow**:
+A toolkit for freelancers built around one flow:
 **track time → bill it → get paid.**
-
-No 47-tab nightmare. No learning curve. No bloat.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen.svg)](./package.json)
@@ -26,19 +24,19 @@ No 47-tab nightmare. No learning curve. No bloat.
 ## ✨ Features
 
 ### ⏱️ Time tracking that doesn't quit
-A live stopwatch that **survives page refreshes** — close your laptop, come back tomorrow, your timer is still running. Log hours against any client or project, then drop them straight onto an invoice.
+A live stopwatch that **survives page refreshes**. Close your laptop, come back tomorrow, and the timer is still running. Log hours against any client or project, then add them straight to an invoice.
 
 ### 🧾 Invoices that look professional
-Build polished invoices in seconds — line items, automatic tax, your logo and brand colors, sequential numbering. Download a **PDF** or **email it to your client** with one click. No more fiddling with Word templates at midnight.
+Build invoices with line items, automatic tax, your logo and brand colors, and sequential numbering. Download a **PDF** or **email it to your client** with one click.
 
 ### 👥 Clients & projects, organized
 Every client in one place with their outstanding balance, total billed, and full invoice history. Group work into projects, set hourly rates, and archive what's done.
 
 ### 📊 A dashboard that tells the truth
-Outstanding revenue, hours tracked this week, who owes you, what's overdue — the numbers that matter, the second you log in.
+Outstanding revenue, hours tracked this week, who owes you and what's overdue, shown as soon as you log in.
 
 ### 🌍 Global payments handled
-Powered by **Lemon Squeezy** (Merchant of Record) — they deal with sales tax, VAT, and GST in 100+ countries so you don't have to. You just get paid.
+Payments run on **Lemon Squeezy** (Merchant of Record), which handles sales tax, VAT, and GST in 100+ countries.
 
 ---
 
@@ -46,10 +44,10 @@ Powered by **Lemon Squeezy** (Merchant of Record) — they deal with sales tax, 
 
 | The problem | Freeby's take |
 |---|---|
-| **Big invoicing tools feel like accounting software** | Freeby is one clean flow: timer → invoice → paid |
-| **Time trackers and invoicing live in different apps** | Time entries flow straight into invoices — no copy-paste |
-| **PDFs that look like spreadsheets** | Every invoice is a branded, designed document |
-| **"Free" plans that watermark everything** | The free tier is genuinely usable: 1 client, 3 invoices/mo |
+| **Big invoicing tools feel like accounting software** | Freeby is one flow: timer → invoice → paid |
+| **Time trackers and invoicing live in different apps** | Time entries go straight into invoices, with no copy-paste |
+| **PDFs that look like spreadsheets** | Every invoice is a branded document |
+| **"Free" plans that watermark everything** | The free tier allows 1 client and 3 invoices/mo |
 | **Tax compliance is a nightmare for solo founders** | Lemon Squeezy handles it as Merchant of Record |
 
 ### Pricing
@@ -100,7 +98,7 @@ Full self-hosting guide → [Self-hosting](#-self-hosting)
    client           auto tax         click            paid ✅
 ```
 
-That's the whole product. Everything else exists to make those four steps effortless.
+Everything else in the app supports those four steps.
 
 ---
 
@@ -161,7 +159,7 @@ LEMONSQUEEZY_API_KEY=<your key>
 pnpm setup
 ```
 
-That's it. Re-run `pnpm setup` anytime (it's idempotent).
+You can re-run `pnpm setup` at any time (it's idempotent).
 
 ### 4. Run it
 
@@ -190,14 +188,14 @@ pnpm build && pnpm start   # production
 <summary><strong>Tech stack</strong></summary>
 
 - **Next.js 16** (App Router, Turbopack) + **React 19**
-- **Better Auth** — email/password, email verification, password reset, Google OAuth
+- **Better Auth**: email/password, email verification, password reset, Google OAuth
 - **Drizzle ORM** + **Neon** Postgres (serverless, HTTP driver)
 - **shadcn-style UI** on **Base UI** primitives + **Tailwind v4** (OKLCH color tokens)
-- **Resend** — transactional email with PDF attachments
-- **Lemon Squeezy** — subscriptions + global tax handling (Merchant of Record)
-- **@react-pdf/renderer** — server-side invoice PDF generation
-- **decimal.js** — money math (round-half-up, no float drift)
-- **Vitest** — unit tests
+- **Resend**: transactional email with PDF attachments
+- **Lemon Squeezy**: subscriptions + global tax handling (Merchant of Record)
+- **@react-pdf/renderer**: server-side invoice PDF generation
+- **decimal.js**: money math (round-half-up, no float drift)
+- **Vitest**: unit tests
 
 </details>
 
@@ -323,7 +321,7 @@ In your Vercel project → **Settings → Environment Variables**, add:
 
 > ⚠️ **`BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` must match exactly.**
 > When you add a custom domain later, update both env vars to the new domain
-> and redeploy — the brand, OG image, PDF footer, and emails all adapt
+> and redeploy. The brand, OG image, PDF footer, and emails adapt
 > automatically.
 
 ### Step 3 — Deploy
@@ -359,6 +357,6 @@ For **local webhook testing**, use a tunnel (ngrok / Cloudflare) to forward `htt
 
 <div align="center">
 
-**Freeby** — built for freelancers who'd rather work than do paperwork.
+**Freeby**, built for freelancers.
 
 </div>
