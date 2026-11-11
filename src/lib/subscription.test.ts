@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { mapLsStatus, LIMITS, showsBranding, deriveEntitlement } from "./subscription-types";
+import {
+  mapLsStatus,
+  LIMITS,
+  showsBranding,
+  deriveEntitlement,
+  ACTIVE_STATUSES,
+} from "./subscription-types";
 
 describe("subscription", () => {
   describe("mapLsStatus", () => {
@@ -99,6 +105,37 @@ describe("subscription", () => {
 
     it("paused Pro is Free", () => {
       expect(deriveEntitlement(row("paused", later), now).plan).toBe("free");
+    });
+  });
+
+  describe("status sources agree", () => {
+    it("mapLsStatus.isActive matches ACTIVE_STATUSES for every Lemon Squeezy status", () => {
+      for (const ls of [
+        "active",
+        "on_trial",
+        "past_due",
+        "unpaid",
+        "paused",
+        "cancelled",
+        "cancelled_immediately",
+        "expired",
+      ]) {
+        const r = mapLsStatus(ls);
+        expect(ACTIVE_STATUSES.includes(r.status), ls).toBe(r.isActive);
+      }
+    });
+
+    it("past_due Pro keeps access during the payment retry", () => {
+      const e = deriveEntitlement(
+        {
+          plan: "pro",
+          status: "past_due",
+          cancelAtPeriodEnd: false,
+          currentPeriodEnd: null,
+        },
+        new Date(),
+      );
+      expect(e.plan).toBe("pro");
     });
   });
 });

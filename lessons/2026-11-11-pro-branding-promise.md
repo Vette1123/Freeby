@@ -11,6 +11,8 @@ The pricing card and billing page sold "No Freeby branding" on Pro. The invoice 
 
 - Lapsed subscribers kept unlimited Pro. The webhook stores `plan: "pro"` for every paid status, including expired, and both limit checks read `LIMITS[entitlement.plan]` without looking at `isActive`. Cancelling also cut access at once, though Lemon Squeezy keeps it until `ends_at` and the row stores `cancelAtPeriodEnd`. `deriveEntitlement()` now makes `plan` the effective plan, and its tests cover active, expired, cancelled-in-period, cancelled-past-end and paused.
 
+- Two sources disagreed on past_due. `mapLsStatus` called it an active grace period, while `ACTIVE_STATUSES` left it out, so a failed card payment cut Pro on the first retry. `ACTIVE_STATUSES` now includes it, and a test asserts the two agree for every Lemon Squeezy status.
+
 ## What worked
 
 - Reading the PDF renderer, not the pricing copy, to decide what Pro actually gets.

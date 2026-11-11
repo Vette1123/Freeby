@@ -36,8 +36,16 @@ export function showsBranding(e: Pick<Entitlement, "plan" | "isActive">): boolea
   return !(e.plan === "pro" && e.isActive);
 }
 
-/** Active subscription statuses that grant Pro access. */
-export const ACTIVE_STATUSES: SubscriptionStatus[] = ["active", "on_trial"];
+/**
+ * Statuses that grant Pro access. past_due is the grace period while Lemon
+ * Squeezy retries a failed payment; it moves to unpaid (mapped to free) when
+ * retries run out. mapLsStatus must agree with this list (tested).
+ */
+export const ACTIVE_STATUSES: SubscriptionStatus[] = [
+  "active",
+  "on_trial",
+  "past_due",
+];
 
 /**
  * Turn a stored subscription row into what the user gets right now. The
