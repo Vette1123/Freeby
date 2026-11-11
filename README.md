@@ -8,7 +8,7 @@ A toolkit for freelancers built around one flow:
 **track time → bill it → get paid.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen.svg)](./package.json)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](./package.json)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![Discussions](https://img.shields.io/badge/Discussions-welcome-9cf.svg)](https://github.com/Vette1123/Freeby/discussions)
 
@@ -60,8 +60,6 @@ Payments run on **Lemon Squeezy** (Merchant of Record), which handles sales tax,
 | Time tracking | ✅ | ✅ |
 | PDF invoices | ✅ | ✅ |
 | Email invoices to clients | ✅ | ✅ |
-| Remove Freeby branding | — | ✅ |
-| Payment tracking | — | ✅ |
 
 ---
 
@@ -69,13 +67,13 @@ Payments run on **Lemon Squeezy** (Merchant of Record), which handles sales tax,
 
 **The hosted version** (recommended for most freelancers):
 
-> Coming soon — Freeby is being prepared for launch.
+> Try it at [freeby-nine.vercel.app](https://freeby-nine.vercel.app).
 
 **Self-hosting** (free, open):
 
 ```bash
 git clone https://github.com/Vette1123/Freeby.git
-cd freeby
+cd Freeby
 pnpm install
 cp .env.example .env   # then fill in your credentials
 pnpm db:push           # create the database tables
@@ -106,7 +104,7 @@ Everything else in the app supports those four steps.
 
 ### Prerequisites
 
-- **Node 24+** and **pnpm**
+- **Node 20+** and **pnpm**
 - A **[Neon](https://neon.tech)** Postgres database (free tier)
 - A **[Resend](https://resend.com)** account for email (optional in dev)
 - A **[Lemon Squeezy](https://lemonsqueezy.com)** account for subscriptions (optional in dev)
