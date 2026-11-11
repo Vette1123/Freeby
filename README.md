@@ -59,7 +59,9 @@ Payments run on **Lemon Squeezy** (Merchant of Record), which handles sales tax,
 | Invoices / month | 3 | Unlimited |
 | Time tracking | ✅ | ✅ |
 | PDF invoices | ✅ | ✅ |
-| Email invoices to clients | ✅ | ✅ |
+| Email invoices to clients | ❌ | ✅ |
+| Payment tracking | ✅ | ✅ |
+| Freeby branding on invoices | Yes | No |
 
 ---
 
