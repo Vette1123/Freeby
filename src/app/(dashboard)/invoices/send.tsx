@@ -14,6 +14,7 @@ import {
   type ActionResult,
 } from "@/lib/actions";
 import { getInvoice } from "./actions";
+import { showsBranding } from "@/lib/subscription-types";
 import { InvoicePdf, type InvoicePdfData } from "@/lib/pdf/invoice-pdf";
 import { InvoiceEmail } from "@/lib/email/templates/invoice";
 import { sendInvoiceWithAttachment } from "@/lib/email/resend";
@@ -54,6 +55,7 @@ export async function sendInvoice(invoiceId: string): Promise<ActionResult> {
     taxAmount: inv.taxAmount,
     total: inv.total,
     notes: inv.notes,
+    branded: showsBranding(entitlement),
     business: {
       name: userRow?.businessName || fromName,
       address: userRow?.businessAddress || null,

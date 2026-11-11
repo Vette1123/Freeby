@@ -28,6 +28,14 @@ export const LIMITS = {
   pro: { maxClients: Infinity, maxInvoicesPerMonth: Infinity },
 } as const;
 
+/**
+ * Free invoices carry the Freeby name; an active Pro plan removes it, as the
+ * pricing page promises.
+ */
+export function showsBranding(e: Pick<Entitlement, "plan" | "isActive">): boolean {
+  return !(e.plan === "pro" && e.isActive);
+}
+
 /** Active subscription statuses that grant Pro access. */
 export const ACTIVE_STATUSES: SubscriptionStatus[] = ["active", "on_trial"];
 

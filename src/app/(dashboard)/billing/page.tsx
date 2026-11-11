@@ -76,8 +76,7 @@ export default async function BillingPage({
             "Unlimited clients",
             "Unlimited invoices",
             "Email invoices with PDF",
-            "Remove Freeby branding",
-            "Payment tracking",
+            "No Freeby branding on invoices",
             "Priority support",
           ].map((feature) => (
             <li key={feature} className="flex items-center gap-2 text-sm">

@@ -18,6 +18,8 @@ export interface InvoicePdfData {
   taxAmount: string;
   total: string;
   notes: string | null;
+  /** False on an active Pro plan: no Freeby name in the header or footer. */
+  branded: boolean;
   business: {
     name: string;
     address: string | null;
@@ -147,8 +149,14 @@ export function InvoicePdf({ data }: { data: InvoicePdfData }) {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.brand}>Freeby</Text>
-            <Text style={styles.brandSub}>INVOICING WITHOUT THE BLOAT</Text>
+            {data.branded ? (
+              <>
+                <Text style={styles.brand}>Freeby</Text>
+                <Text style={styles.brandSub}>INVOICING WITHOUT THE BLOAT</Text>
+              </>
+            ) : (
+              <Text style={styles.brand}>{data.business.name}</Text>
+            )}
           </View>
           <View>
             <Text style={styles.invoiceTitle}>INVOICE</Text>
@@ -243,9 +251,11 @@ export function InvoicePdf({ data }: { data: InvoicePdfData }) {
           </View>
         )}
 
-        <Text style={styles.footer} fixed>
-          Generated with Freeby · {brandHost()}
-        </Text>
+        {data.branded && (
+          <Text style={styles.footer} fixed>
+            Generated with Freeby · {brandHost()}
+          </Text>
+        )}
       </Page>
     </Document>
   );

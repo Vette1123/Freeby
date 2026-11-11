@@ -17,7 +17,7 @@ import {
 } from "@/lib/subscription-types";
 
 export type { Entitlement, Plan, SubscriptionStatus };
-export { LIMITS, mapLsStatus } from "@/lib/subscription-types";
+export { LIMITS, mapLsStatus, showsBranding } from "@/lib/subscription-types";
 
 const FREE_DEFAULT: Entitlement = {
   plan: "free",

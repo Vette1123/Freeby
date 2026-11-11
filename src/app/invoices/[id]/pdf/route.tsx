@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/schema";
 import { requireSession } from "@/lib/get-session";
+import { getEntitlement, showsBranding } from "@/lib/subscription";
 import { getInvoice } from "@/app/(dashboard)/invoices/actions";
 import { InvoicePdf, type InvoicePdfData } from "@/lib/pdf/invoice-pdf";
 
@@ -38,6 +39,7 @@ export async function GET(
     taxAmount: inv.taxAmount,
     total: inv.total,
     notes: inv.notes,
+    branded: showsBranding(await getEntitlement(session.user.id)),
     business: {
       name: userRow?.businessName || session.user.name,
       address: userRow?.businessAddress || null,

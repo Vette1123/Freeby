@@ -13,15 +13,15 @@ const freeFeatures = [
   "3 invoices / month",
   "Time tracking",
   "PDF download",
+  "Payment tracking",
+  "Tax rate on every invoice",
 ];
 
 const proFeatures = [
   "Unlimited clients",
   "Unlimited invoices",
   "Email invoices + PDF",
-  "No Freeby branding",
-  "Payment tracking",
-  "Global tax handling",
+  "No Freeby branding on invoices",
 ];
 
 const PLANS = {

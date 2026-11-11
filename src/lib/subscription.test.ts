@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapLsStatus, LIMITS } from "./subscription-types";
+import { mapLsStatus, LIMITS, showsBranding } from "./subscription-types";
 
 describe("subscription", () => {
   describe("mapLsStatus", () => {
@@ -47,6 +47,18 @@ describe("subscription", () => {
     it("pro plan has unlimited limits", () => {
       expect(LIMITS.pro.maxClients).toBe(Infinity);
       expect(LIMITS.pro.maxInvoicesPerMonth).toBe(Infinity);
+    });
+  });
+
+  describe("showsBranding", () => {
+    it("brands free invoices", () => {
+      expect(showsBranding({ plan: "free", isActive: false })).toBe(true);
+    });
+    it("removes branding for active Pro", () => {
+      expect(showsBranding({ plan: "pro", isActive: true })).toBe(false);
+    });
+    it("brands again once Pro lapses", () => {
+      expect(showsBranding({ plan: "pro", isActive: false })).toBe(true);
     });
   });
 });
