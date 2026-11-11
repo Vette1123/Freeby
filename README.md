@@ -353,6 +353,8 @@ When you deploy, set `NEXT_PUBLIC_APP_URL` to your real domain and run `pnpm set
 
 For **local webhook testing**, use a tunnel (ngrok / Cloudflare) to forward `https://<tunnel>/api/lemonsqueezy/webhook` to `localhost:3000`, then run `pnpm setup` with `NEXT_PUBLIC_APP_URL` set to the tunnel URL.
 
+Which subscription statuses keep Pro (including `past_due` and `cancelled`) is decided in one place, `deriveEntitlement()` in `src/lib/subscription-types.ts`. The reasoning is written up in [Lemon Squeezy subscription statuses and access](https://www.mohamedgado.com/writing/lemon-squeezy-subscription-status-access).
+
 ---
 
 <div align="center">
