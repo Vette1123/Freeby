@@ -78,10 +78,19 @@ export function deriveEntitlement(
   };
 }
 
-/** Map a Lemon Squeezy subscription status to our internal status. */
+/**
+ * Map a Lemon Squeezy subscription status to our internal status. A pause in
+ * `free` mode (the subscription's `pause.mode`) means the customer keeps the
+ * service without paying, so it maps to active; a `void` pause has no access.
+ * Lemon Squeezy sends subscription_unpaused/updated when the pause ends.
+ */
 export function mapLsStatus(
   lsStatus: string,
+  pauseMode?: string | null,
 ): { status: SubscriptionStatus; isActive: boolean } {
+  if (lsStatus === "paused" && pauseMode === "free") {
+    return { status: "active", isActive: true };
+  }
   switch (lsStatus) {
     case "active":
       return { status: "active", isActive: true };

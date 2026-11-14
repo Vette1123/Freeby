@@ -37,6 +37,13 @@ describe("subscription", () => {
       expect(r.isActive).toBe(false);
     });
 
+    it("paused in free mode keeps Pro; void mode and no mode do not", () => {
+      expect(mapLsStatus("paused", "free")).toEqual({ status: "active", isActive: true });
+      expect(mapLsStatus("paused", "void").isActive).toBe(false);
+      expect(mapLsStatus("paused").isActive).toBe(false);
+      expect(mapLsStatus("active", "void").isActive).toBe(true);
+    });
+
     it("maps unknown statuses to free", () => {
       const r = mapLsStatus("something_random");
       expect(r.status).toBe("free");

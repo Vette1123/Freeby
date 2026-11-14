@@ -58,6 +58,7 @@ export interface LsSubscriptionPayload {
       renews_at?: string | null;
       ends_at?: string | null;
       cancelled?: boolean;
+      pause?: { mode?: "void" | "free"; resumes_at?: string | null } | null;
       user_email?: string;
       user_name?: string;
       urls?: {
@@ -113,7 +114,7 @@ export async function processSubscriptionEvent(
   }
 
   const lsCustomerId = String(attrs.customer_id);
-  const { status } = mapLsStatus(attrs.status);
+  const { status } = mapLsStatus(attrs.status, attrs.pause?.mode);
   const plan: "pro" | "free" = status === "free" ? "free" : "pro";
   const variantId =
     attrs.variant_id != null ? String(attrs.variant_id) : null;
